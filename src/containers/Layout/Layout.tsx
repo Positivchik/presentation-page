@@ -1,5 +1,24 @@
 import { FC } from "react"
 
+import styled from '@emotion/styled'
+
+const StyledLayout = styled.div`
+  max-width: 1312px;
+  padding: 32px;
+  border: 1px solid black;
+  margin: 0 auto;
+`
+
+const StyledLayoutInner = styled.div`
+  border: 1px solid black;
+`
+
 export const Layout: FC<any> = ({ children}) => {
-    return <div><div>layout</div>{children}</div>
+    return (<StyledLayout>
+        <StyledLayoutInner>
+        <nav>Тут должна быть навигация, к примеру по моим мини проектам</nav>
+        {children}
+        <footer>А тут футер, тут можно контакты оставить</footer>
+        </StyledLayoutInner>
+        </StyledLayout>)
 }
