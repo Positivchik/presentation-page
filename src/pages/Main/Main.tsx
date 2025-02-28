@@ -1,12 +1,26 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { withLayout } from "../../utils/HOCs/withLayout";
-
-import styled from '@emotion/styled'
-
-const Title = styled.h1`
-  color: red;
-`;
+import { Map } from "@containers/Map";
 
 export const Main: FC<any> = withLayout(() => {
-    return <Title>Привет, прошу прощения, я ещё не решил что тут будет</Title>
+  const [position, setPosition] = useState<[number, number]>();
+
+  useEffect(() => {
+
+navigator.geolocation.getCurrentPosition(
+  ({ coords }) => {
+    console.log(coords);
+    setPosition([coords.latitude, coords.longitude])
+  },
+  (error) => console.error("Ошибка геолокации:", error),
+  { enableHighAccuracy: true }
+);
+
+  }, [])
+
+    return (
+      <div>
+        {position && <Map initialPosition={position} />}
+    </div>
+    )
 })
