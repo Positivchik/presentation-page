@@ -1,11 +1,15 @@
-import React, { FC, ReactNode } from "react";
+import React, { FC, ReactNode } from 'react';
 
 interface FlexboxProps {
-    children: ReactNode;
-    tag?: string;
-    gap?: number;
+  children: ReactNode;
+  tag?: string;
+  gap?: number;
 }
 
-export const Flexbox:FC<FlexboxProps> = ({ children, tag = 'div', gap }) => {
-    return React.createElement(tag, { style: { display: 'flex', gap }}, children)
-}
+export const Flexbox: FC<FlexboxProps> = ({ children, tag = 'div', gap }) => {
+  return React.createElement(
+    tag,
+    { style: { display: 'flex', gap } },
+    children
+  );
+};

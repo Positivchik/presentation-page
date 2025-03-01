@@ -1,9 +1,9 @@
-import { Layout } from "../../containers/Layout"
+import { Layout } from '../../containers/Layout';
 
 export const withLayout = (Component: any) => (props: any) => {
-    return (
-        <Layout>
-            <Component {...props}/>
-        </Layout>
-    )
-}
+  return (
+    <Layout>
+      <Component {...props} />
+    </Layout>
+  );
+};

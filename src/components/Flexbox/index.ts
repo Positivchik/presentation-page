@@ -1,1 +1,1 @@
-export { Flexbox } from './Flexbox'
+export { Flexbox } from './Flexbox';
