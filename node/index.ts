@@ -8,6 +8,7 @@ app.use(express.static('./dist/browser'));
 console.log('start');
 
 app.get('/', (req, res) => {
+  console.log('request', Date.now());
   const file = fs.readFileSync('./dist/browser/index.html', 'utf-8');
   res.send(file);
 });
