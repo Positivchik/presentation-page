@@ -22,7 +22,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   return (
     <StyledLayout>
       <StyledLayoutInner>
-        <Menu />
+        {/* <Menu /> */}
         {children}
         <footer>А тут футер, тут можно контакты оставить</footer>
       </StyledLayoutInner>

@@ -10,15 +10,17 @@
     "@emotion/styled": "^11.14.0",
     "@types/yandex-maps": "^2.1.36",
     "antd": "^5.24.2",
+    "express": "^4.21.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^6.30.0",
     "reset-css": "^5.0.2",
-    "webpack-dev-server": "^5.2.0"
+    "webpack-dev-server": "^5.2.0",
+    "yandex-maps": "^0.0.1"
   },
   "scripts": {
-    "start": "webpack serve",
-    "build": "webpack",
+    "start": "webpack serve --config webpack.client.config.js",
+    "build": "webpack --config webpack.client.config.js",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "lint:fix": "eslint 'src/**/*.{ts,tsx}' --fix",
     "format": "prettier --write 'src/**/*.{ts,tsx,js,jsx,json,css,scss,md}'"

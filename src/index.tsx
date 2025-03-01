@@ -1,12 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Main } from './pages/Main';
-import { Location } from './pages/Location';
-import { Map } from '@containers/Map';
+// import { Location } from './pages/Location';
 
 import styled from '@emotion/styled';
 import 'reset-css';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+// import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Global } from '@emotion/react';
 
 const Globals = styled.div`
@@ -15,16 +14,16 @@ const Globals = styled.div`
   }
 `;
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Main />,
-  },
-  {
-    path: '/location/',
-    element: <Location />,
-  },
-]);
+// const router = createBrowserRouter([
+//   {
+//     path: '/',
+//     element: <Main />,
+//   },
+//   {
+//     path: '/location/',
+//     element: <Location />,
+//   },
+// ]);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -39,7 +38,8 @@ root.render(
       }}
     />
     <Globals>
-      <RouterProvider router={router} />
+      {/* <RouterProvider router={router} /> */}
+      <Main />
     </Globals>
   </div>
 );
