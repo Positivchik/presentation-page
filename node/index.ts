@@ -5,6 +5,7 @@ const app = express();
 const port = 3000;
 
 app.use(express.static('./dist/browser'));
+console.log('start');
 
 app.get('/', (req, res) => {
   const file = fs.readFileSync('./dist/browser/index.html', 'utf-8');

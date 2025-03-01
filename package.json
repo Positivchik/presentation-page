@@ -22,11 +22,11 @@
     "yandex-maps": "^0.0.1"
   },
   "scripts": {
-    "server:build": "webpack --config webpack.server.config.js",
+    "build:client": "webpack --config webpack.client.config.js",
+    "build:server": "webpack --config webpack.server.config.js",
     "server:watch": "webpack --config webpack.server.config.js --watch",
     "server:dev": "nodemon",
     "start": "webpack serve --config webpack.client.config.js",
-    "build": "webpack --config webpack.client.config.js",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "lint:fix": "eslint 'src/**/*.{ts,tsx}' --fix",
     "format": "prettier --write 'src/**/*.{ts,tsx,js,jsx,json,css,scss,md}'"
