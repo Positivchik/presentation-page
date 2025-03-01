@@ -12,7 +12,8 @@
     "paths": {
       "@components/*": ["src/components/*"],
       "@containers/*": ["src/containers/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@constants/*": ["src/constants/*"],
   }
   },
   "include": ["src"],

@@ -1,8 +1,8 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
 
 module.exports = {
+  devtool: 'eval',
   externals: {
     'yandex-maps': 'ymaps',
   },
@@ -19,6 +19,7 @@ module.exports = {
       '@components': path.resolve(__dirname, 'src/components'),
       '@containers': path.resolve(__dirname, 'src/containers'),
       '@utils': path.resolve(__dirname, 'src/utils'),
+      '@constants': path.resolve(__dirname, 'src/constants'),
     },
   },
   module: {
@@ -58,11 +59,9 @@ module.exports = {
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>My fun app</title>
-          <script src="https://api-maps.yandex.ru/2.1/?apikey=8fddd0c8-b9bc-4d8c-b4ed-7d010d31875d&lang=ru_RU" type="text/javascript"></script>
         </head>
         <body>
           <div id="root"></div>
-          <div id="map" style="width: 600px; height: 400px"></div>
         </body>
         </html>
       `,

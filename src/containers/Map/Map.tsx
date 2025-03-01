@@ -1,6 +1,7 @@
-import { getDistance } from '@utils/getDistance';
+import { YandexMap } from '@components/YandexMap';
 import { FC, useEffect, useState } from 'react';
-import ymaps from 'yandex-maps';
+import { YANDEX_API_KEY } from '@constants/index';
+import type ymaps from 'yandex-maps';
 
 interface MapProps {
   initialPosition: [number, number];
@@ -30,25 +31,8 @@ export const Map: FC<MapProps> = ({ initialPosition }) => {
   }, []);
 
   useEffect(() => {
-    ymaps.ready(() => {
-      setMap(
-        new ymaps.Map('map', {
-          center: position,
-          // от 0 (весь мир) до 19.
-          zoom: 15,
-          controls: [],
-        })
-      );
-    });
-
-    return () => {
-      map?.destroy();
-    };
-  }, []);
-
-  useEffect(() => {
     if (map && position) {
-      const me = new ymaps.GeoObject(
+      const me = new window.ymaps.GeoObject(
         {
           geometry: {
             type: 'Point',
@@ -80,5 +64,20 @@ export const Map: FC<MapProps> = ({ initialPosition }) => {
     return () => navigator.geolocation.clearWatch(watchId);
   }, []);
 
-  return <div>map</div>;
+  return (
+    <div>
+      <button>Создать</button>
+      <button>Подключиться</button>
+      {position && (
+        <YandexMap
+          apiKey={YANDEX_API_KEY}
+          initialPosition={position}
+          onInit={(map) => {
+            console.log({ map });
+            setMap(map);
+          }}
+        />
+      )}
+    </div>
+  );
 };
