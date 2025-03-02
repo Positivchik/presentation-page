@@ -1,9 +1,11 @@
 import http from 'http';
 import { Express } from 'express';
-import { WebSocketServer } from 'ws';
+import { WebSocket, WebSocketServer } from 'ws';
 import { store, ChannelsSlice } from '@node/store';
 import crypto from 'crypto';
 import { WEBSOCKER_PORT } from '@node/constants';
+
+const WebSocketMap: Record<string, WebSocket> = {};
 
 export const initWebSocket = (app: Express) => {
   const server = http.createServer(app);
@@ -11,9 +13,11 @@ export const initWebSocket = (app: Express) => {
 
   wss.on('connection', (ws) => {
     const userId = crypto.randomUUID();
+    WebSocketMap[userId] = ws;
 
-    ws.on('message', (message: string) => {
-      const parsedData = JSON.parse(message);
+    ws.on('message', (message) => {
+      const parsedData = JSON.parse(message.toString());
+      console.log('message', parsedData);
 
       switch (parsedData.type) {
         case 'update': {
@@ -22,8 +26,9 @@ export const initWebSocket = (app: Express) => {
             users.some(({ userId: id }) => id === userId)
           )!;
           const sendUsers = users.filter(({ userId: id }) => id !== userId);
-          sendUsers.forEach(({ ws }) =>
-            ws.send(
+          sendUsers.forEach(({ userId }) => {
+            const ws = WebSocketMap[userId];
+            ws?.send(
               JSON.stringify({
                 type: 'update',
                 payload: {
@@ -31,16 +36,20 @@ export const initWebSocket = (app: Express) => {
                   payload: parsedData.payload,
                 },
               })
-            )
-          );
+            );
+          });
           break;
         }
         case 'create': {
+          console.log('create', {
+            userId,
+            name: parsedData.payload,
+            ws,
+          });
           store.dispatch(
             ChannelsSlice.actions.createChannel({
               userId,
               name: parsedData.payload,
-              ws,
             })
           );
           console.log('Channel created');
@@ -53,7 +62,6 @@ export const initWebSocket = (app: Express) => {
               channelId,
               userId,
               name,
-              ws,
             })
           );
           console.log('Client connected');
@@ -68,10 +76,11 @@ export const initWebSocket = (app: Express) => {
 
     ws.on('close', () => {
       store.dispatch(ChannelsSlice.actions.disconnectChannel({ userId }));
+      delete WebSocketMap[userId];
       console.log('Client disconnected');
     });
   });
   server.listen(WEBSOCKER_PORT, () => {
     console.log(`Server is listening on http://localhost:${WEBSOCKER_PORT}`);
   });
-}
+};

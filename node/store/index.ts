@@ -1,12 +1,10 @@
 import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { WebSocket } from 'ws';
 
 type TChannelId = string;
 
 interface TPayload {
   name: string;
   userId: string;
-  ws: WebSocket;
 }
 
 interface TInitalState {
@@ -66,8 +64,8 @@ export const ChannelsSlice = createSlice({
         }
       >
     ) => {
-      const { channelId, userId, name, ws } = action.payload;
-      state.channels[channelId].push({ userId, name, ws });
+      const { channelId, userId, name } = action.payload;
+      state.channels[channelId].push({ userId, name });
     },
   },
 });

@@ -2,10 +2,13 @@ import express from 'express';
 import fs from 'fs';
 import { APP_PORT } from '@node/constants';
 import { initWebSocket } from './utils/initWebSocket';
+import bodyParser from 'body-parser';
 
 const app = express();
-initWebSocket(app);
 app.use(express.static('./dist/browser'));
+app.use(bodyParser.json());
+
+initWebSocket(app);
 
 console.log('start');
 
