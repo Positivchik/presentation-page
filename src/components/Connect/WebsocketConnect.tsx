@@ -61,9 +61,10 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
       }
 
       if (parsedData.type === 'create') {
-        console.log(
-          `${window.location.origin}?${CHANNEL_URL_PARAM}=${parsedData.payload}`
-        );
+        const channelUrl = `${window.location.origin}?${CHANNEL_URL_PARAM}=${parsedData.payload}`;
+        alert(channelUrl);
+
+        console.log(channelUrl);
       }
     }
   );

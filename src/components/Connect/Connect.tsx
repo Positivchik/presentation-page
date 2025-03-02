@@ -3,7 +3,6 @@ import { WebsocketConnect, WebsocketConnectProps } from './WebsocketConnect';
 import { TPosition } from '@node/types/WS';
 import { getUrlParam } from '@utils/getUrlParam';
 import { CHANNEL_URL_PARAM } from '@constants/index';
-import { Flexbox } from '@components/Flexbox';
 
 export const Connect: FC<{
   position: TPosition;
