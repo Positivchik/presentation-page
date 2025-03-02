@@ -1,12 +1,19 @@
 import { FC, useState } from 'react';
-import { WebsocketConnect } from './WebsocketConnect';
+import { WebsocketConnect, WebsocketConnectProps } from './WebsocketConnect';
+import { TPosition } from '@node/types/WS';
+import { getUrlParam } from '@utils/getUrlParam';
+import { CHANNEL_URL_PARAM } from '@constants/index';
+import { Flexbox } from '@components/Flexbox';
 
 export const Connect: FC<{
-  position: [number, number];
-  addMapObject: (any: any[]) => void;
-}> = ({ position, addMapObject }) => {
-  const [step, setStep] = useState<'connect' | 'create' | null>(null);
+  position: TPosition;
+  addPoints: WebsocketConnectProps['addPoints'];
+}> = ({ position, addPoints }) => {
+  const [step, setStep] = useState<WebsocketConnectProps['type'] | null>(null);
   const [name, setName] = useState<string>('');
+  const [channelId, setChannelId] = useState<string>(
+    getUrlParam(CHANNEL_URL_PARAM) || ''
+  );
 
   return (
     <div>
@@ -17,19 +24,29 @@ export const Connect: FC<{
           }}
           value={name}
         />
+
+        <button onClick={() => setStep('create')} disabled={!name}>
+          Создать канал
+        </button>
       </div>
-      <button onClick={() => setStep('create')} disabled={!name}>
-        Создать канал
-      </button>
-      <button onClick={() => setStep('connect')} disabled={!name}>
-        Подключиться к каналу
-      </button>
+      <div>
+        <input
+          onChange={(e) => {
+            setChannelId(e.target.value);
+          }}
+          value={channelId}
+        />
+        <button onClick={() => setStep('connect')} disabled={!channelId}>
+          Подключиться к каналу
+        </button>
+      </div>
       {step && (
         <WebsocketConnect
           name={name}
           position={position}
-          addMapObject={addMapObject}
+          addPoints={addPoints}
           type={step}
+          channelId={channelId}
         />
       )}
     </div>

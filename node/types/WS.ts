@@ -1,4 +1,5 @@
 type TUserId = string;
+export type TPosition = [number, number];
 
 export enum WSEvents {
   CLOSE = 'close',
@@ -12,13 +13,15 @@ export type TCloseResponse = {
   payload: TUserId;
 };
 
+export type TUpdatePayload = {
+  userId: TUserId;
+  name: string;
+  position: TPosition;
+};
+
 export type TUpdateResponse = {
   type: WSEvents.UPDATE;
-  payload: {
-    userId: TUserId;
-    name: string;
-    position: [number, number];
-  };
+  payload: TUpdatePayload;
 };
 
 export type TConnectResponse = {

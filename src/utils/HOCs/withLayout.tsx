@@ -1,6 +1,11 @@
-import { Layout } from '../../containers/Layout';
+import { ComponentType, JSX } from 'react';
+import { Layout } from '@containers/Layout';
 
-export const withLayout = (Component: any) => (props: any) => {
+type TWithLayout = <P extends object>(
+  Component: ComponentType<P>
+) => (props: P) => JSX.Element;
+
+export const withLayout: TWithLayout = (Component) => (props) => {
   return (
     <Layout>
       <Component {...props} />

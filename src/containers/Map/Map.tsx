@@ -1,28 +1,22 @@
 import { YandexMap } from '@components/YandexMap';
 import { FC, useEffect, useState } from 'react';
-import { YANDEX_API_KEY } from '@constants/index';
 import type ymaps from 'yandex-maps';
-import { getDistance } from '@utils/getDistance';
 import { Connect } from '@components/Connect';
+import { TPosition, TUpdatePayload } from '@node/types/WS';
+import { createPoint } from '@utils/createGetPoint';
 
 interface MapProps {
-  initialPosition: [number, number];
+  initialPosition: TPosition;
 }
 
 export const Map: FC<MapProps> = ({ initialPosition }) => {
   const [position, setPosition] = useState(initialPosition);
   const [map, setMap] = useState<null | ymaps.Map>(null);
-  const [otherPositions, setOtherPointers] = useState<
-    { id: string; name: string; position: [number, number] }[]
-  >([]);
-  console.log({otherPositions, position});
+  const [otherPositions, setOtherPointers] = useState<TUpdatePayload[]>([]);
 
   useEffect(() => {
     navigator.geolocation.watchPosition(
       (position) => {
-        // if (!position || getDistance(position, position) > 10) {
-        //   setPosition([position.coords.latitude, position.coords.longitude]);
-        // }
         setPosition([position.coords.latitude, position.coords.longitude]);
       },
       (error) => console.error('Ошибка:', error),
@@ -32,52 +26,20 @@ export const Map: FC<MapProps> = ({ initialPosition }) => {
 
   useEffect(() => {
     if (map && position) {
-      const me = new window.ymaps.GeoObject(
-        {
-          geometry: {
-            type: 'Point',
-            // @ts-expect-error coordinates don't exist in types
-            coordinates: position,
-          },
-          properties: {
-            iconContent: 'Я',
-          },
-        },
-        {
-          preset: 'islands#blackStretchyIcon',
-          draggable: false,
-        }
-      );
-      map.geoObjects.add(me);
+      const point = createPoint('Я', position);
+      map.geoObjects.add(point);
 
       return () => {
-        map.geoObjects.remove(me);
+        map.geoObjects.remove(point);
       };
     }
   }, [map, position]);
 
-  //// ----
   useEffect(() => {
     if (map && otherPositions.length) {
-      const createdObjects = otherPositions.map(({ name, position }) => {
-        return new window.ymaps.GeoObject(
-          {
-            geometry: {
-              type: 'Point',
-              // @ts-expect-error coordinates don't exist in types
-              coordinates: position,
-            },
-            properties: {
-              iconContent: name,
-            },
-          },
-          {
-            preset: 'islands#blackStretchyIcon',
-            draggable: false,
-          }
-        );
-      });
-
+      const createdObjects = otherPositions.map(({ name, position }) =>
+        createPoint(name, position)
+      );
       createdObjects.forEach((obj) => {
         map.geoObjects.add(obj);
       });
@@ -89,7 +51,7 @@ export const Map: FC<MapProps> = ({ initialPosition }) => {
       };
     }
   }, [map, otherPositions]);
-  /// -----
+
   useEffect(() => {
     const watchId = navigator.geolocation.watchPosition(({ coords }) => {
       setPosition([coords.latitude, coords.longitude]);
@@ -102,16 +64,14 @@ export const Map: FC<MapProps> = ({ initialPosition }) => {
     <div>
       <Connect
         position={position}
-        addMapObject={(any: any[]) => {
-          setOtherPointers(any);
+        addPoints={(data) => {
+          setOtherPointers(data);
         }}
       />
       {position && (
         <YandexMap
-          apiKey={YANDEX_API_KEY}
           initialPosition={position}
           onInit={(map) => {
-            console.log({ map });
             setMap(map);
           }}
         />

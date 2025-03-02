@@ -1,14 +1,14 @@
 import { FC, useEffect, useState } from 'react';
-import { withLayout } from '../../utils/HOCs/withLayout';
+import { withLayout } from '@utils/HOCs/withLayout';
 import { Map } from '@containers/Map';
+import { TPosition } from '@node/types/WS';
 
-export const Main: FC<any> = withLayout(() => {
-  const [position, setPosition] = useState<[number, number]>();
+export const Main: FC<object> = withLayout(() => {
+  const [position, setPosition] = useState<TPosition | null>(null);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
-        console.log(coords);
         setPosition([coords.latitude, coords.longitude]);
       },
       (error) => console.error('Ошибка геолокации:', error),
@@ -16,5 +16,5 @@ export const Main: FC<any> = withLayout(() => {
     );
   }, []);
 
-  return <div>{position && <Map initialPosition={position} />}</div>;
+  return position ? <Map initialPosition={position} /> : null;
 });

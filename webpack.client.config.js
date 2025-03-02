@@ -20,6 +20,8 @@ module.exports = {
       '@containers': path.resolve(__dirname, 'src/containers'),
       '@utils': path.resolve(__dirname, 'src/utils'),
       '@constants': path.resolve(__dirname, 'src/constants'),
+      '@node': path.resolve(__dirname, 'node'),
+      '@types': path.resolve(__dirname, 'src/types'),
     },
   },
   module: {

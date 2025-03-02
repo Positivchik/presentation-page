@@ -1,13 +1,9 @@
 import { FC } from 'react';
 import { Flexbox } from '@components/Flexbox';
-import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
+import { StyledMenuItem } from './Menu.styled';
 
-const StyledMenuItem = styled.div`
-  cursor: pointer;
-  color: green;
-`;
-export const Menu: FC<any> = () => {
+export const Menu: FC<object> = () => {
   return (
     <Flexbox tag="nav" gap={10}>
       <StyledMenuItem>

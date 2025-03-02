@@ -1,41 +1,48 @@
 import { useWebSocket } from '@utils/useWebSocket';
 import { FC, useEffect, useState } from 'react';
-import { getUrlParam } from '@utils/getUrlParam';
+import { WEBSOCKER_PORT } from '@node/constants';
+import { CHANNEL_URL_PARAM } from '@constants/index';
+import {
+  TConnectRequest,
+  TPosition,
+  TUpdatePayload,
+  WSEvents,
+} from '@node/types/WS';
 
-interface WebsocketConnectProps {
+export interface WebsocketConnectProps {
   type: 'connect' | 'create';
   name: string;
-  position: [number, number];
-  addMapObject: (any: any[]) => void;
+  position: TPosition;
+  addPoints: (data: TUpdatePayload[]) => void;
+  channelId: string;
 }
 
 export const WebsocketConnect: FC<WebsocketConnectProps> = ({
   type,
   name,
   position,
-  addMapObject,
+  addPoints,
+  channelId,
 }) => {
   const [isReady, setIsReady] = useState<boolean>(false);
 
   const { sendMessage } = useWebSocket(
-    `ws://localhost:8080`,
+    `ws://localhost:${WEBSOCKER_PORT}`,
     (ws) => {
       if (type === 'connect') {
-        const channelId = getUrlParam('channelId');
+        const data: TConnectRequest = {
+          type: WSEvents.CONNECT,
+          payload: {
+            name,
+            channelId,
+          },
+        };
 
-        ws.send(
-          JSON.stringify({
-            type: 'connect',
-            payload: {
-              name,
-              channelId,
-            },
-          })
-        );
+        ws.send(JSON.stringify(data));
       } else {
         ws.send(
           JSON.stringify({
-            type: 'create',
+            type: WSEvents.CREATE,
             payload: {
               name,
               position,
@@ -50,21 +57,12 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
       const parsedData = JSON.parse(e.data as string);
 
       if (parsedData.type === 'update') {
-        const { userId, name, position } = parsedData.payload;
-
-        addMapObject([
-          {
-            id: userId,
-            name,
-            position,
-          },
-        ]);
-        console.log('update', parsedData.payload);
+        addPoints([parsedData.payload]);
       }
 
       if (parsedData.type === 'create') {
         console.log(
-          `${window.location.origin}?channelId=${parsedData.payload}`
+          `${window.location.origin}?${CHANNEL_URL_PARAM}=${parsedData.payload}`
         );
       }
     }
@@ -72,7 +70,7 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
 
   useEffect(() => {
     if (isReady) {
-      sendMessage(JSON.stringify({ type: 'update', payload: position }));
+      sendMessage(JSON.stringify({ type: WSEvents.UPDATE, payload: position }));
     }
   }, [isReady, position]);
 

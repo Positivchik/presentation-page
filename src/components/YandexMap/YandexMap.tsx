@@ -1,17 +1,14 @@
-import React, { FC, useEffect, useRef } from 'react';
+import { YANDEX_MAPS_URL } from '@constants/index';
+import { TPosition } from '@node/types/WS';
+import { FC, useEffect, useRef } from 'react';
 import ymaps from 'yandex-maps';
 
 interface YandexMapProps {
-  initialPosition: [number, number];
-  apiKey: string;
+  initialPosition: TPosition;
   onInit: (map: ymaps.Map) => void;
 }
 
-export const YandexMap: FC<YandexMapProps> = ({
-  apiKey,
-  initialPosition,
-  onInit,
-}) => {
+export const YandexMap: FC<YandexMapProps> = ({ initialPosition, onInit }) => {
   const mapRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -27,7 +24,7 @@ export const YandexMap: FC<YandexMapProps> = ({
       };
       const loadScript = () => {
         const script = document.createElement('script');
-        script.src = `https://api-maps.yandex.ru/2.1/?apikey=${apiKey}&lang=ru_RU`;
+        script.src = YANDEX_MAPS_URL;
         script.async = true;
         script.onload = () => {
           window.ymaps.ready(() => initMap(mapRef.current as HTMLDivElement));

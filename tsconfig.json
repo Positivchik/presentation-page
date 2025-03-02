@@ -14,6 +14,7 @@
       "@containers/*": ["src/containers/*"],
       "@utils/*": ["src/utils/*"],
       "@constants/*": ["src/constants/*"],
+      "@types/*": ["src/types/*"],
       "@node/*":["node/*"]
   }
   },
