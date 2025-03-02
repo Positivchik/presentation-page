@@ -19,18 +19,21 @@ export const Connect: FC<{
     <div>
       <div>
         <input
+          placeholder="Имя"
           onChange={(e) => {
             setName(e.target.value);
           }}
           value={name}
         />
-
+      </div>
+      <div>
         <button onClick={() => setStep('create')} disabled={!name}>
           Создать канал
         </button>
       </div>
       <div>
         <input
+          placeholder="ИД канала"
           onChange={(e) => {
             setChannelId(e.target.value);
           }}
