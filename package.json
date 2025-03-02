@@ -19,6 +19,7 @@
     "react-router-dom": "^6.30.0",
     "reset-css": "^5.0.2",
     "webpack-dev-server": "^5.2.0",
+    "ws": "^8.18.1",
     "yandex-maps": "^0.0.1"
   },
   "scripts": {
@@ -28,7 +29,7 @@
     "server:watch": "webpack --config webpack.server.config.js --watch",
     "server:nodemon": "nodemon",
     "client:serve": "webpack serve --config webpack.client.config.js",
-    "client": "webpack --config webpack.client.config.js --watch",
+    "client:watch": "webpack --config webpack.client.config.js --watch",
     "server": "npm-run-all -p server:nodemon server:watch",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "lint:fix": "eslint 'src/**/*.{ts,tsx}' --fix",
@@ -56,5 +57,9 @@
     "typescript": "5.7",
     "webpack": "^5.98.0",
     "webpack-cli": "^6.0.1"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.9",
+    "utf-8-validate": "^6.0.5"
   }
 }

@@ -2,6 +2,8 @@ import { YandexMap } from '@components/YandexMap';
 import { FC, useEffect, useState } from 'react';
 import { YANDEX_API_KEY } from '@constants/index';
 import type ymaps from 'yandex-maps';
+import { getDistance } from '@utils/getDistance';
+import { Connect } from '@components/Connect';
 
 interface MapProps {
   initialPosition: [number, number];
@@ -18,10 +20,10 @@ export const Map: FC<MapProps> = ({ initialPosition }) => {
   useEffect(() => {
     navigator.geolocation.watchPosition(
       (position) => {
-        // if (!position || getDistance(position, position) > 10) {
-        //   //   sendToServer(position);
-        //   setPosition([position.coords.latitude, position.coords.longitude]);
-        // }
+        if (!position || getDistance(position, position) > 10) {
+          //   sendToServer(position);
+          setPosition([position.coords.latitude, position.coords.longitude]);
+        }
         // alert(JSON.stringify([position.coords.latitude, position.coords.longitude]));
         setPosition([position.coords.latitude, position.coords.longitude]);
       },
@@ -66,8 +68,7 @@ export const Map: FC<MapProps> = ({ initialPosition }) => {
 
   return (
     <div>
-      <button>Создать</button>
-      <button>Подключиться</button>
+      <Connect />
       {position && (
         <YandexMap
           apiKey={YANDEX_API_KEY}
