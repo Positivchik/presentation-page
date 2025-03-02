@@ -3,25 +3,17 @@ import { useEffect, useState } from 'react';
 export const useWebSocket = (
   url: string,
   onOpen: (ws: WebSocket) => void,
-  onMessage: (event: MessageEvent<any>) => void
+  onMessage: (event: MessageEvent<unknown>) => void
 ) => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [messages, setMessages] = useState<string[]>([]);
 
   useEffect(() => {
     const ws = new WebSocket(url);
-    // @ts-expect-error any
-    window.myWS = ws;
 
     ws.onopen = () => {
       onOpen(ws);
-      //   ws.send(JSON);
     };
-    ws.onmessage = (event) => {
-      console.log('Received:', event.data);
-      setMessages((prev) => [...prev, event.data]);
-      onMessage(event);
-    };
+    ws.onmessage = onMessage;
     ws.onclose = () => console.log('Disconnected from WebSocket');
     ws.onerror = (error) => console.error('WebSocket Error:', error);
 
@@ -36,5 +28,5 @@ export const useWebSocket = (
     }
   };
 
-  return { messages, sendMessage };
+  return { sendMessage };
 };

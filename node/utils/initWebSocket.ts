@@ -1,9 +1,18 @@
 import http from 'http';
 import { Express } from 'express';
 import { WebSocket, WebSocketServer } from 'ws';
-import { store, ChannelsSlice } from '@node/store';
+import { store, ChannelsSlice, getOtherChannelUsers } from '@node/store';
 import crypto from 'crypto';
 import { WEBSOCKER_PORT } from '@node/constants';
+import {
+  TCloseResponse,
+  TConnectRequest,
+  TCreateRequest,
+  TCreateResponse,
+  TUpdateRequest,
+  TUpdateResponse,
+  WSEvents,
+} from '@node/types/WS';
 
 const WebSocketMap: Record<string, WebSocket> = {};
 const usersPositions: Record<string, [number, number]> = {};
@@ -12,56 +21,53 @@ export const initWebSocket = (app: Express) => {
   const server = http.createServer(app);
   const wss = new WebSocketServer({ server });
 
-  wss.on('connection', (ws) => {
+  const handleWSConnection = (ws: WebSocket) => {
     const userId = crypto.randomUUID();
     WebSocketMap[userId] = ws;
 
     ws.on('message', (message) => {
       const parsedData = JSON.parse(message.toString());
-      console.log('message', parsedData);
 
       switch (parsedData.type) {
         case 'update': {
-          const { channels } = store.getState().channels;
-          const [, users] =
-            Object.entries(channels || {}).find(([, users]) =>
-              users?.some(({ userId: id }) => id === userId)
-            ) || [];
-
-          const sendUsers =
-            users?.filter(({ userId: id }) => id !== userId) || [];
-          sendUsers?.forEach(({ userId, name }) => {
+          const typedData: TUpdateRequest = parsedData;
+          getOtherChannelUsers(userId)?.forEach(({ userId, name }) => {
             const ws = WebSocketMap[userId];
-            ws?.send(
-              JSON.stringify({
-                type: 'update',
-                payload: {
-                  userId,
-                  name,
-                  position: parsedData.payload,
-                },
-              })
-            );
+            const data: TUpdateResponse = {
+              type: WSEvents.UPDATE,
+              payload: {
+                userId,
+                name,
+                position: typedData.payload,
+              },
+            };
+            ws?.send(JSON.stringify(data));
           });
           break;
         }
         case 'create': {
-          usersPositions[userId] = parsedData.payload.position;
+          const typedData: TCreateRequest = parsedData;
+          usersPositions[userId] = typedData.payload.position;
 
           store.dispatch(
             ChannelsSlice.actions.createChannel({
               userId,
-              name: parsedData.payload.name,
+              name: typedData.payload.name,
             })
           );
-          ws.send(JSON.stringify({ type: 'create', payload: userId }));
-          const { channels } = store.getState().channels;
 
-          console.log('Channel created', channels);
+          const data: TCreateResponse = {
+            type: WSEvents.CREATE,
+            payload: userId,
+          };
+          ws.send(JSON.stringify(data));
+
+          console.log('Channel created');
           break;
         }
         case 'connect': {
-          const { name, channelId } = parsedData.payload;
+          const typedData: TConnectRequest = parsedData;
+          const { name, channelId } = typedData.payload;
           store.dispatch(
             ChannelsSlice.actions.connectToChannel({
               channelId,
@@ -70,58 +76,43 @@ export const initWebSocket = (app: Express) => {
             })
           );
           ws.send(JSON.stringify({ type: 'connect', payload: userId }));
-          console.log('Client connected');
 
-          const { channels } = store.getState().channels;
-          const [, users] =
-            Object.entries(channels || {}).find(([, users]) =>
-              users?.some(({ userId: id }) => id === userId)
-            ) || [];
+          getOtherChannelUsers(userId)?.forEach(
+            ({ userId: anotherUserId, name }) => {
+              const ws = WebSocketMap[userId];
+              const position = usersPositions[anotherUserId];
 
-          const sendUsers =
-            users?.filter(({ userId: id }) => id !== userId) || [];
-
-          sendUsers?.forEach(({ userId: anotherUserId, name }) => {
-            const ws = WebSocketMap[userId];
-            const position = usersPositions[anotherUserId];
-
-            if (position) {
-              ws?.send(
-                JSON.stringify({
-                  type: 'update',
+              if (position) {
+                const data: TUpdateResponse = {
+                  type: WSEvents.UPDATE,
                   payload: {
                     userId,
                     name,
                     position,
                   },
-                })
-              );
+                };
+                ws?.send(JSON.stringify(data));
+              }
             }
-          });
+          );
 
+          console.log('Client connected');
           break;
         }
         default:
-          return null;
+          return;
       }
     });
 
     ws.on('close', () => {
-      const { channels } = store.getState().channels;
-      const [, users] =
-        Object.entries(channels || {}).find(([, users]) =>
-          users?.some(({ userId: id }) => id === userId)
-        ) || [];
-
-      const sendUsers = users?.filter(({ userId: id }) => id !== userId);
-      sendUsers?.forEach(({ userId }) => {
+      getOtherChannelUsers(userId)?.forEach(({ userId }) => {
         const ws = WebSocketMap[userId];
-        ws?.send(
-          JSON.stringify({
-            type: 'close',
-            payload: userId,
-          })
-        );
+        const data: TCloseResponse = {
+          type: WSEvents.CLOSE,
+          payload: userId,
+        };
+
+        ws?.send(JSON.stringify(data));
       });
 
       store.dispatch(ChannelsSlice.actions.disconnectChannel({ userId }));
@@ -129,7 +120,10 @@ export const initWebSocket = (app: Express) => {
 
       console.log('Client disconnected');
     });
-  });
+  };
+
+  wss.on('connection', handleWSConnection);
+
   server.listen(WEBSOCKER_PORT, () => {
     console.log(`Server is listening on http://localhost:${WEBSOCKER_PORT}`);
   });

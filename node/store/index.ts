@@ -54,12 +54,6 @@ export const ChannelsSlice = createSlice({
     ) => {
       const { channelId, userId, name } = action.payload;
       state.channels[channelId]?.push({ userId, name });
-      console.log('connectToChannel', {
-        channelId,
-        userId,
-        name,
-        channels: state.channels,
-      });
     },
   },
 });
@@ -69,3 +63,11 @@ export const store = configureStore({
     channels: ChannelsSlice.reducer,
   },
 });
+
+export const getChannelsSelector = () => store.getState().channels.channels;
+export const findChannelUsersSelector = (userId: string) =>
+  Object.values(getChannelsSelector() || {}).find((users) =>
+    users?.some(({ userId: id }) => id === userId)
+  ) || [];
+export const getOtherChannelUsers = (userId: string) =>
+  findChannelUsersSelector(userId)?.filter(({ userId: id }) => id !== userId);

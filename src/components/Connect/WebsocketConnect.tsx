@@ -1,5 +1,6 @@
 import { useWebSocket } from '@utils/useWebSocket';
 import { FC, useEffect, useState } from 'react';
+import { getUrlParam } from '@utils/getUrlParam';
 
 interface WebsocketConnectProps {
   type: 'connect' | 'create';
@@ -16,13 +17,11 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
 }) => {
   const [isReady, setIsReady] = useState<boolean>(false);
 
-  const { messages, sendMessage } = useWebSocket(
-    'ws://localhost:8080',
+  const { sendMessage } = useWebSocket(
+    `ws://localhost:8080`,
     (ws) => {
       if (type === 'connect') {
-        const params = new URLSearchParams(window.location.search);
-        const channelId = params.get('channelId'); // Получаем значение параметра "key"
-        console.log(channelId);
+        const channelId = getUrlParam('channelId');
 
         ws.send(
           JSON.stringify({
@@ -48,7 +47,7 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
       setIsReady(true);
     },
     (e) => {
-      const parsedData = JSON.parse(e.data);
+      const parsedData = JSON.parse(e.data as string);
 
       if (parsedData.type === 'update') {
         const { userId, name, position } = parsedData.payload;
@@ -73,14 +72,9 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
 
   useEffect(() => {
     if (isReady) {
-      console.log('send position', position);
       sendMessage(JSON.stringify({ type: 'update', payload: position }));
     }
   }, [isReady, position]);
 
-  return (
-    <div>
-      <div>{messages}</div>
-    </div>
-  );
+  return null;
 };
