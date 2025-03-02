@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 
-export const useWebSocket = (url: string, onOpen: (ws: WebSocket) => void) => {
+export const useWebSocket = (
+  url: string,
+  onOpen: (ws: WebSocket) => void,
+  onMessage: (event: MessageEvent<any>) => void
+) => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [messages, setMessages] = useState<string[]>([]);
 
@@ -16,6 +20,7 @@ export const useWebSocket = (url: string, onOpen: (ws: WebSocket) => void) => {
     ws.onmessage = (event) => {
       console.log('Received:', event.data);
       setMessages((prev) => [...prev, event.data]);
+      onMessage(event);
     };
     ws.onclose = () => console.log('Disconnected from WebSocket');
     ws.onerror = (error) => console.error('WebSocket Error:', error);

@@ -25,6 +25,7 @@ export const initWebSocket = (app: Express) => {
           const [, users] = Object.entries(channels).find(([, users]) =>
             users.some(({ userId: id }) => id === userId)
           )!;
+
           const sendUsers = users.filter(({ userId: id }) => id !== userId);
           sendUsers.forEach(({ userId }) => {
             const ws = WebSocketMap[userId];
@@ -52,6 +53,7 @@ export const initWebSocket = (app: Express) => {
               name: parsedData.payload,
             })
           );
+          ws.send(JSON.stringify({ type: 'create', payload: userId }));
           console.log('Channel created');
           break;
         }
@@ -64,19 +66,33 @@ export const initWebSocket = (app: Express) => {
               name,
             })
           );
+          ws.send(JSON.stringify({ type: 'connect', payload: userId }));
           console.log('Client connected');
           break;
         }
         default:
           return null;
       }
-
-      ws.send(`Server received: ${message}`);
     });
 
     ws.on('close', () => {
       store.dispatch(ChannelsSlice.actions.disconnectChannel({ userId }));
       delete WebSocketMap[userId];
+      const { channels } = store.getState().channels;
+      const [, users] = Object.entries(channels).find(([, users]) =>
+        users.some(({ userId: id }) => id === userId)
+      )!;
+
+      const sendUsers = users.filter(({ userId: id }) => id !== userId);
+      sendUsers.forEach(({ userId }) => {
+        const ws = WebSocketMap[userId];
+        ws?.send(
+          JSON.stringify({
+            type: 'close',
+            payload: userId,
+          })
+        );
+      });
       console.log('Client disconnected');
     });
   });

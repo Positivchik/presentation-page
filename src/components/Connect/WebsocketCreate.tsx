@@ -15,6 +15,9 @@ export const WebsocketCreate: FC<WebsocketCreateProps> = ({ name }) => {
           payload: name,
         })
       );
+    },
+    (e) => {
+      console.log(JSON.parse(e.data));
     }
   );
   const [message, setMessage] = useState<string>('');
