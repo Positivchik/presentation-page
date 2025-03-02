@@ -12,19 +12,17 @@ interface MapProps {
 export const Map: FC<MapProps> = ({ initialPosition }) => {
   const [position, setPosition] = useState(initialPosition);
   const [map, setMap] = useState<null | ymaps.Map>(null);
-
-  useEffect(() => {
-    console.log(position);
-  }, [position]);
+  const [otherPositions, setOtherPointers] = useState<
+    { id: string; name: string; position: [number, number] }[]
+  >([]);
+  console.log({otherPositions, position});
 
   useEffect(() => {
     navigator.geolocation.watchPosition(
       (position) => {
-        if (!position || getDistance(position, position) > 10) {
-          //   sendToServer(position);
-          setPosition([position.coords.latitude, position.coords.longitude]);
-        }
-        // alert(JSON.stringify([position.coords.latitude, position.coords.longitude]));
+        // if (!position || getDistance(position, position) > 10) {
+        //   setPosition([position.coords.latitude, position.coords.longitude]);
+        // }
         setPosition([position.coords.latitude, position.coords.longitude]);
       },
       (error) => console.error('Ошибка:', error),
@@ -58,6 +56,40 @@ export const Map: FC<MapProps> = ({ initialPosition }) => {
     }
   }, [map, position]);
 
+  //// ----
+  useEffect(() => {
+    if (map && otherPositions.length) {
+      const createdObjects = otherPositions.map(({ name, position }) => {
+        return new window.ymaps.GeoObject(
+          {
+            geometry: {
+              type: 'Point',
+              // @ts-expect-error coordinates don't exist in types
+              coordinates: position,
+            },
+            properties: {
+              iconContent: name,
+            },
+          },
+          {
+            preset: 'islands#blackStretchyIcon',
+            draggable: false,
+          }
+        );
+      });
+
+      createdObjects.forEach((obj) => {
+        map.geoObjects.add(obj);
+      });
+
+      return () => {
+        createdObjects.forEach((obj) => {
+          map.geoObjects.remove(obj);
+        });
+      };
+    }
+  }, [map, otherPositions]);
+  /// -----
   useEffect(() => {
     const watchId = navigator.geolocation.watchPosition(({ coords }) => {
       setPosition([coords.latitude, coords.longitude]);
@@ -68,7 +100,12 @@ export const Map: FC<MapProps> = ({ initialPosition }) => {
 
   return (
     <div>
-      <Connect />
+      <Connect
+        position={position}
+        addMapObject={(any: any[]) => {
+          setOtherPointers(any);
+        }}
+      />
       {position && (
         <YandexMap
           apiKey={YANDEX_API_KEY}

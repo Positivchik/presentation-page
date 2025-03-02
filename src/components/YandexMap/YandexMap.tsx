@@ -21,7 +21,7 @@ export const YandexMap: FC<YandexMapProps> = ({
         map = new window.ymaps.Map(element, {
           center: initialPosition,
           controls: [],
-          zoom: 15,
+          zoom: 12,
         });
         onInit(map);
       };

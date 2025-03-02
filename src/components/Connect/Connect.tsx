@@ -1,16 +1,37 @@
 import { FC, useState } from 'react';
-import { Name } from '@containers/Name';
+import { WebsocketConnect } from './WebsocketConnect';
 
-export const Connect: FC<unknown> = () => {
+export const Connect: FC<{
+  position: [number, number];
+  addMapObject: (any: any[]) => void;
+}> = ({ position, addMapObject }) => {
   const [step, setStep] = useState<'connect' | 'create' | null>(null);
-
-  const hideModal = () => setStep(null);
+  const [name, setName] = useState<string>('');
 
   return (
     <div>
-      <button onClick={() => setStep('create')}>Создать канал</button>
-      <button onClick={() => setStep('connect')}>Подключиться к каналу</button>
-      {step && <Name type={step} />}
+      <div>
+        <input
+          onChange={(e) => {
+            setName(e.target.value);
+          }}
+          value={name}
+        />
+      </div>
+      <button onClick={() => setStep('create')} disabled={!name}>
+        Создать канал
+      </button>
+      <button onClick={() => setStep('connect')} disabled={!name}>
+        Подключиться к каналу
+      </button>
+      {step && (
+        <WebsocketConnect
+          name={name}
+          position={position}
+          addMapObject={addMapObject}
+          type={step}
+        />
+      )}
     </div>
   );
 };

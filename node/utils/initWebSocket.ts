@@ -6,6 +6,7 @@ import crypto from 'crypto';
 import { WEBSOCKER_PORT } from '@node/constants';
 
 const WebSocketMap: Record<string, WebSocket> = {};
+const usersPositions: Record<string, [number, number]> = {};
 
 export const initWebSocket = (app: Express) => {
   const server = http.createServer(app);
@@ -22,19 +23,22 @@ export const initWebSocket = (app: Express) => {
       switch (parsedData.type) {
         case 'update': {
           const { channels } = store.getState().channels;
-          const [, users] = Object.entries(channels).find(([, users]) =>
-            users.some(({ userId: id }) => id === userId)
-          )!;
+          const [, users] =
+            Object.entries(channels || {}).find(([, users]) =>
+              users?.some(({ userId: id }) => id === userId)
+            ) || [];
 
-          const sendUsers = users.filter(({ userId: id }) => id !== userId);
-          sendUsers.forEach(({ userId }) => {
+          const sendUsers =
+            users?.filter(({ userId: id }) => id !== userId) || [];
+          sendUsers?.forEach(({ userId, name }) => {
             const ws = WebSocketMap[userId];
             ws?.send(
               JSON.stringify({
                 type: 'update',
                 payload: {
                   userId,
-                  payload: parsedData.payload,
+                  name,
+                  position: parsedData.payload,
                 },
               })
             );
@@ -42,23 +46,22 @@ export const initWebSocket = (app: Express) => {
           break;
         }
         case 'create': {
-          console.log('create', {
-            userId,
-            name: parsedData.payload,
-            ws,
-          });
+          usersPositions[userId] = parsedData.payload.position;
+
           store.dispatch(
             ChannelsSlice.actions.createChannel({
               userId,
-              name: parsedData.payload,
+              name: parsedData.payload.name,
             })
           );
           ws.send(JSON.stringify({ type: 'create', payload: userId }));
-          console.log('Channel created');
+          const { channels } = store.getState().channels;
+
+          console.log('Channel created', channels);
           break;
         }
         case 'connect': {
-          const { name, channelId } = parsedData;
+          const { name, channelId } = parsedData.payload;
           store.dispatch(
             ChannelsSlice.actions.connectToChannel({
               channelId,
@@ -68,6 +71,34 @@ export const initWebSocket = (app: Express) => {
           );
           ws.send(JSON.stringify({ type: 'connect', payload: userId }));
           console.log('Client connected');
+
+          const { channels } = store.getState().channels;
+          const [, users] =
+            Object.entries(channels || {}).find(([, users]) =>
+              users?.some(({ userId: id }) => id === userId)
+            ) || [];
+
+          const sendUsers =
+            users?.filter(({ userId: id }) => id !== userId) || [];
+
+          sendUsers?.forEach(({ userId: anotherUserId, name }) => {
+            const ws = WebSocketMap[userId];
+            const position = usersPositions[anotherUserId];
+
+            if (position) {
+              ws?.send(
+                JSON.stringify({
+                  type: 'update',
+                  payload: {
+                    userId,
+                    name,
+                    position,
+                  },
+                })
+              );
+            }
+          });
+
           break;
         }
         default:
@@ -76,15 +107,14 @@ export const initWebSocket = (app: Express) => {
     });
 
     ws.on('close', () => {
-      store.dispatch(ChannelsSlice.actions.disconnectChannel({ userId }));
-      delete WebSocketMap[userId];
       const { channels } = store.getState().channels;
-      const [, users] = Object.entries(channels).find(([, users]) =>
-        users.some(({ userId: id }) => id === userId)
-      )!;
+      const [, users] =
+        Object.entries(channels || {}).find(([, users]) =>
+          users?.some(({ userId: id }) => id === userId)
+        ) || [];
 
-      const sendUsers = users.filter(({ userId: id }) => id !== userId);
-      sendUsers.forEach(({ userId }) => {
+      const sendUsers = users?.filter(({ userId: id }) => id !== userId);
+      sendUsers?.forEach(({ userId }) => {
         const ws = WebSocketMap[userId];
         ws?.send(
           JSON.stringify({
@@ -93,6 +123,10 @@ export const initWebSocket = (app: Express) => {
           })
         );
       });
+
+      store.dispatch(ChannelsSlice.actions.disconnectChannel({ userId }));
+      delete WebSocketMap[userId];
+
       console.log('Client disconnected');
     });
   });

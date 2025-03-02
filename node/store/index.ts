@@ -25,19 +25,6 @@ export const ChannelsSlice = createSlice({
       const { userId } = action.payload;
       state.channels[userId] = [action.payload];
     },
-    // updateName: (
-    //   state,
-    //   action: PayloadAction<{ userId: TChannelId; name: string }>
-    // ) => {
-    //   const { userId, name } = action.payload;
-    //   const [channelId, users] = Object.entries(state.channels).find(
-    //     ([, users]) => users.some(({ userId: id }) => id === userId)
-    //   )!;
-    //   state.channels[channelId] = users.map((userData) => {
-    //     const { userId: id } = userData;
-    //     return id === userId ? { ...userData, name } : userData;
-    //   });
-    // },
     disconnectChannel: (state, action: PayloadAction<{ userId: string }>) => {
       const { userId } = action.payload;
       const isOwner = !!state.channels[userId];
@@ -45,15 +32,16 @@ export const ChannelsSlice = createSlice({
       if (isOwner) {
         delete state.channels[userId];
       } else {
-        const [channelId, users] = Object.entries(state.channels).find(
-          ([, users]) => users.find(({ userId }) => userId === userId)
-        )!;
+        const [channelId, users] =
+          Object.entries(state.channels).find(([, users]) =>
+            users.find(({ userId }) => userId === userId)
+          ) || [];
 
-        const filteredChannel = users?.filter(
-          ({ userId: id }) => id !== userId
-        );
-
-        state.channels[channelId] = filteredChannel;
+        const filteredChannel =
+          users?.filter(({ userId: id }) => id !== userId) || [];
+        if (channelId) {
+          state.channels[channelId] = filteredChannel;
+        }
       }
     },
     connectToChannel: (
@@ -65,7 +53,13 @@ export const ChannelsSlice = createSlice({
       >
     ) => {
       const { channelId, userId, name } = action.payload;
-      state.channels[channelId].push({ userId, name });
+      state.channels[channelId]?.push({ userId, name });
+      console.log('connectToChannel', {
+        channelId,
+        userId,
+        name,
+        channels: state.channels,
+      });
     },
   },
 });
