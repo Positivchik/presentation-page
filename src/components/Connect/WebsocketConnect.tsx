@@ -71,8 +71,6 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
         if (parsedData.payload === channelId) {
           close();
           onClose();
-        } else {
-          onOpen(null);
         }
         setAnotherPosition(null);
       }

@@ -7,7 +7,6 @@ import {
   getUsersSelector,
   getChannelsSelector,
 } from '@node/store';
-import crypto from 'crypto';
 import { WEBSOCKER_PORT } from '@node/constants';
 import {
   TCloseResponse,
@@ -18,6 +17,8 @@ import {
   TUpdateResponse,
   WSEvents,
 } from '@node/types/WS';
+import { getRandomNumber } from './getRandomNumber';
+import { callRecursive } from './callRecursive';
 
 const WebSocketMap: Record<string, WebSocket> = {};
 const usersPositions: Record<string, [number, number]> = {};
@@ -27,7 +28,10 @@ export const initWebSocket = (app: Express) => {
   const wss = new WebSocketServer({ server });
 
   const handleWSConnection = (ws: WebSocket) => {
-    const userId = crypto.randomUUID();
+    const userId = callRecursive(
+      () => String(getRandomNumber(3)),
+      (v) => !WebSocketMap[v]
+    );
     WebSocketMap[userId] = ws;
 
     ws.on('message', (message) => {
