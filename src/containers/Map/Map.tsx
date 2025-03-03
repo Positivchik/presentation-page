@@ -14,7 +14,7 @@ interface MapProps {
 }
 
 export const Map: FC<MapProps> = ({ initialPosition }) => {
-  const [position, setPosition] = useState(initialPosition);
+  const [position, setPosition] = useState<TPosition>(initialPosition);
   const [map, setMap] = useState<null | ymaps.Map>(null);
   const [anotherPosition, setAnotherPosition] =
     useState<TAnotherPositionState>(null);

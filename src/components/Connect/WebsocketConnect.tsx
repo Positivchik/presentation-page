@@ -13,6 +13,7 @@ export interface WebsocketConnectProps {
   >;
   channelId: string;
   onClose: () => void;
+  onOpen: (status: WebsocketConnectProps['type']) => void;
 }
 
 export const WebsocketConnect: FC<WebsocketConnectProps> = ({
@@ -21,6 +22,7 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
   setAnotherPosition,
   channelId,
   onClose,
+  onOpen,
 }) => {
   const [isReady, setIsReady] = useState<boolean>(false);
 
@@ -48,6 +50,7 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
       }
 
       setIsReady(true);
+      onOpen(type);
     },
     (e) => {
       const parsedData = JSON.parse(e.data as string);

@@ -12,11 +12,16 @@ export const Connect: FC<{
   const [channelId, setChannelId] = useState<string>(
     getUrlParam(CHANNEL_URL_PARAM) || ''
   );
+  const [status, setStatus] = useState<null | WebsocketConnectProps['type']>(
+    null
+  );
 
   return (
     <div>
       <div>
-        <button onClick={() => setStep('create')}>Создать канал</button>
+        <button onClick={() => setStep('create')} disabled={!!status}>
+          Создать канал
+        </button>
       </div>
       <div>
         <input
@@ -25,8 +30,12 @@ export const Connect: FC<{
             setChannelId(e.target.value);
           }}
           value={channelId}
+          disabled={!!status}
         />
-        <button onClick={() => setStep('connect')} disabled={!channelId}>
+        <button
+          onClick={() => setStep('connect')}
+          disabled={!channelId || !!status}
+        >
           Подключиться
         </button>
       </div>
@@ -37,6 +46,7 @@ export const Connect: FC<{
           type={step}
           channelId={channelId}
           onClose={() => setStep(null)}
+          onOpen={(v) => setStatus(v)}
         />
       )}
     </div>
