@@ -2,27 +2,23 @@ import { useWebSocket } from '@utils/useWebSocket';
 import { FC, useEffect, useState } from 'react';
 import { WEBSOCKER_PORT } from '@node/constants';
 import { CHANNEL_URL_PARAM } from '@constants/index';
-import {
-  TConnectRequest,
-  TPosition,
-  TUpdatePayload,
-  WSEvents,
-} from '@node/types/WS';
+import { TConnectRequest, TPosition, WSEvents } from '@node/types/WS';
+import { TAnotherPositionState } from '@containers/Map/Map';
 
 export interface WebsocketConnectProps {
   type: 'connect' | 'create';
-  name: string;
   position: TPosition;
-  addPoints: React.Dispatch<React.SetStateAction<TUpdatePayload[]>>;
+  setAnotherPosition: React.Dispatch<
+    React.SetStateAction<TAnotherPositionState>
+  >;
   channelId: string;
   onClose: () => void;
 }
 
 export const WebsocketConnect: FC<WebsocketConnectProps> = ({
   type,
-  name,
   position,
-  addPoints,
+  setAnotherPosition,
   channelId,
   onClose,
 }) => {
@@ -35,7 +31,6 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
         const data: TConnectRequest = {
           type: WSEvents.CONNECT,
           payload: {
-            name,
             channelId,
           },
         };
@@ -46,7 +41,6 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
           JSON.stringify({
             type: WSEvents.CREATE,
             payload: {
-              name,
               position,
             },
           })
@@ -59,7 +53,7 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
       const parsedData = JSON.parse(e.data as string);
 
       if (parsedData.type === 'update') {
-        addPoints([parsedData.payload]);
+        setAnotherPosition(parsedData.payload);
       }
 
       if (parsedData.type === 'create') {
@@ -74,14 +68,8 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
         if (parsedData.payload === channelId) {
           close();
           onClose();
-          addPoints([]);
-        } else {
-          addPoints((v) =>
-            v.filter(({ userId }) => {
-              return parsedData.payload !== userId;
-            })
-          );
         }
+        setAnotherPosition(null);
       }
     }
   );

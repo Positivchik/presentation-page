@@ -3,7 +3,6 @@ import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit';
 type TChannelId = string;
 
 interface TPayload {
-  name: string;
   userId: string;
 }
 
@@ -53,8 +52,8 @@ export const ChannelsSlice = createSlice({
         }
       >
     ) => {
-      const { channelId, userId, name } = action.payload;
-      state.channels[channelId]?.push({ userId, name });
+      const { channelId, userId } = action.payload;
+      state.channels[channelId]?.push({ userId });
     },
   },
 });
@@ -70,15 +69,12 @@ export const findChannelUsersSelector = (userId: string) =>
   Object.values(getChannelsSelector() || {}).find((users) =>
     users?.some(({ userId: id }) => id === userId)
   ) || [];
-export const getOtherChannelUsers = (userId: string) =>
-  findChannelUsersSelector(userId)?.filter(({ userId: id }) => id !== userId);
-export const getCurrentUser = (userId: string) =>
-  findChannelUsersSelector(userId)?.filter(({ userId: id }) => id === userId);
+
 export const getUsers = (userId: string) => {
   const allUsers = findChannelUsersSelector(userId);
   const otherUsers: TPayload[] = [];
   let currentUser = null as unknown as TPayload;
-
+debugger;
   allUsers.forEach((user) => {
     if (user.userId === userId) {
       currentUser = user;

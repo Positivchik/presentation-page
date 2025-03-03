@@ -15,7 +15,6 @@ export type TCloseResponse = {
 
 export type TUpdatePayload = {
   userId: TUserId;
-  name: string;
   position: TPosition;
 };
 
@@ -38,7 +37,6 @@ export type TConnectRequest = {
   type: WSEvents.CONNECT;
   payload: {
     channelId: string;
-    name: string;
   };
 };
 
@@ -50,7 +48,7 @@ export type TUpdateRequest = {
 export type TCreateRequest = {
   type: WSEvents.CREATE;
   payload: {
-    position: [number, number];
     name: string;
+    position: [number, number];
   };
 };

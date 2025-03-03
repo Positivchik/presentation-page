@@ -1,12 +1,7 @@
 import http from 'http';
 import { Express } from 'express';
 import { WebSocket, WebSocketServer } from 'ws';
-import {
-  store,
-  ChannelsSlice,
-  getOtherChannelUsers,
-  getUsers,
-} from '@node/store';
+import { store, ChannelsSlice, getUsers } from '@node/store';
 import crypto from 'crypto';
 import { WEBSOCKER_PORT } from '@node/constants';
 import {
@@ -43,7 +38,6 @@ export const initWebSocket = (app: Express) => {
               type: WSEvents.UPDATE,
               payload: {
                 userId: currentUser.userId,
-                name: currentUser.name,
                 position: typedData.payload,
               },
             };
@@ -58,7 +52,6 @@ export const initWebSocket = (app: Express) => {
           store.dispatch(
             ChannelsSlice.actions.createChannel({
               userId,
-              name: typedData.payload.name,
             })
           );
 
@@ -73,34 +66,38 @@ export const initWebSocket = (app: Express) => {
         }
         case 'connect': {
           const typedData: TConnectRequest = parsedData;
-          const { name, channelId } = typedData.payload;
+          const { channelId } = typedData.payload;
+          const { otherUsers } = getUsers(userId);
+
+          if (otherUsers.length >= 2) {
+            ws.close();
+            return;
+          }
+
           store.dispatch(
             ChannelsSlice.actions.connectToChannel({
               channelId,
               userId,
-              name,
             })
           );
           ws.send(JSON.stringify({ type: 'connect', payload: userId }));
 
-          getOtherChannelUsers(userId)?.forEach(
-            ({ userId: anotherUserId, name }) => {
-              const ws = WebSocketMap[userId];
-              const position = usersPositions[anotherUserId];
+          const { otherUsers: otherUsersUpdated } = getUsers(userId);
+          otherUsersUpdated.forEach(({ userId: anotherUserId }) => {
+            const ws = WebSocketMap[userId];
+            const position = usersPositions[anotherUserId];
 
-              if (position) {
-                const data: TUpdateResponse = {
-                  type: WSEvents.UPDATE,
-                  payload: {
-                    userId,
-                    name,
-                    position,
-                  },
-                };
-                ws?.send(JSON.stringify(data));
-              }
+            if (position) {
+              const data: TUpdateResponse = {
+                type: WSEvents.UPDATE,
+                payload: {
+                  userId,
+                  position,
+                },
+              };
+              ws?.send(JSON.stringify(data));
             }
-          );
+          });
 
           console.log('Client connected');
           break;

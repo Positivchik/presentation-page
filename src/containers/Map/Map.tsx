@@ -5,6 +5,9 @@ import { Connect } from '@components/Connect';
 import { TPosition, TUpdatePayload } from '@node/types/WS';
 import { createPoint } from '@utils/createGetPoint';
 import { Flexbox } from '@components/Flexbox';
+import { USER_NAMES } from '@constants/index';
+
+export type TAnotherPositionState = TUpdatePayload | null;
 
 interface MapProps {
   initialPosition: TPosition;
@@ -13,7 +16,8 @@ interface MapProps {
 export const Map: FC<MapProps> = ({ initialPosition }) => {
   const [position, setPosition] = useState(initialPosition);
   const [map, setMap] = useState<null | ymaps.Map>(null);
-  const [otherPositions, setOtherPointers] = useState<TUpdatePayload[]>([]);
+  const [anotherPosition, setAnotherPosition] =
+    useState<TAnotherPositionState>(null);
 
   useEffect(() => {
     navigator.geolocation.watchPosition(
@@ -27,7 +31,7 @@ export const Map: FC<MapProps> = ({ initialPosition }) => {
 
   useEffect(() => {
     if (map && position) {
-      const point = createPoint('Я', position);
+      const point = createPoint(USER_NAMES.my, position);
       map.geoObjects.add(point);
 
       return () => {
@@ -37,21 +41,18 @@ export const Map: FC<MapProps> = ({ initialPosition }) => {
   }, [map, position]);
 
   useEffect(() => {
-    if (map && otherPositions.length) {
-      const createdObjects = otherPositions.map(({ name, position }) =>
-        createPoint(name, position)
+    if (map && anotherPosition) {
+      const secondObject = createPoint(
+        USER_NAMES.another,
+        anotherPosition.position
       );
-      createdObjects.forEach((obj) => {
-        map.geoObjects.add(obj);
-      });
+      map.geoObjects.add(secondObject);
 
       return () => {
-        createdObjects.forEach((obj) => {
-          map.geoObjects.remove(obj);
-        });
+        map.geoObjects.remove(secondObject);
       };
     }
-  }, [map, otherPositions]);
+  }, [map, anotherPosition]);
 
   useEffect(() => {
     const watchId = navigator.geolocation.watchPosition(({ coords }) => {
@@ -63,7 +64,7 @@ export const Map: FC<MapProps> = ({ initialPosition }) => {
 
   return (
     <Flexbox flexDirection="column" height="100vh">
-      <Connect position={position} addPoints={setOtherPointers} />
+      <Connect position={position} setAnotherPosition={setAnotherPosition} />
       {position && (
         <YandexMap
           initialPosition={position}
