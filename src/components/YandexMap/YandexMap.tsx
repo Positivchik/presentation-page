@@ -2,6 +2,7 @@ import { YANDEX_MAPS_URL } from '@constants/index';
 import { TPosition } from '@node/types/WS';
 import { FC, useEffect, useRef } from 'react';
 import ymaps from 'yandex-maps';
+import { StyledMap } from './YandexMap.styled';
 
 interface YandexMapProps {
   initialPosition: TPosition;
@@ -17,9 +18,14 @@ export const YandexMap: FC<YandexMapProps> = ({ initialPosition, onInit }) => {
       const initMap = (element: HTMLDivElement) => {
         map = new window.ymaps.Map(element, {
           center: initialPosition,
-          controls: [],
+          controls: ['zoomControl'],
           zoom: 12,
         });
+        map.behaviors.enable('scrollZoom'); // Enable smooth zooming with scroll
+        map.behaviors.enable('dblClickZoom'); // Enable double-click zoom
+        map.behaviors.enable('multiTouch'); // Enable smooth zoom with touch gestures
+        map.options.set('zoomAnimationDuration', 500);
+
         onInit(map);
       };
       const loadScript = () => {
@@ -40,5 +46,5 @@ export const YandexMap: FC<YandexMapProps> = ({ initialPosition, onInit }) => {
     }
   }, []);
 
-  return <div ref={mapRef} style={{ width: '100%', height: '400px' }} />;
+  return <StyledMap ref={mapRef} />;
 };

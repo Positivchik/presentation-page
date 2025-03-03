@@ -4,6 +4,7 @@ import type ymaps from 'yandex-maps';
 import { Connect } from '@components/Connect';
 import { TPosition, TUpdatePayload } from '@node/types/WS';
 import { createPoint } from '@utils/createGetPoint';
+import { Flexbox } from '@components/Flexbox';
 
 interface MapProps {
   initialPosition: TPosition;
@@ -61,7 +62,7 @@ export const Map: FC<MapProps> = ({ initialPosition }) => {
   }, []);
 
   return (
-    <div>
+    <Flexbox flexDirection="column" height="100vh">
       <Connect
         position={position}
         addPoints={(data) => {
@@ -76,6 +77,6 @@ export const Map: FC<MapProps> = ({ initialPosition }) => {
           }}
         />
       )}
-    </div>
+    </Flexbox>
   );
 };

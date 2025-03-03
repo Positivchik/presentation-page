@@ -5,6 +5,12 @@ import { initWebSocket } from './utils/initWebSocket';
 import bodyParser from 'body-parser';
 
 const app = express();
+
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} Request from: ${req.hostname}`);
+  next();
+});
+
 app.use(express.static('./dist/browser'));
 app.use(bodyParser.json());
 
@@ -15,6 +21,7 @@ app.get('/', (req, res) => {
   res.send(file);
 });
 
-app.listen(APP_PORT, () => {
-  console.log(`Example app listening on port ${APP_PORT}`);
+app.listen(APP_PORT, 'localhost', () => {
+  console.log(`🚀 Server running at:`);
+  console.log(`   - Local:   http://localhost:${APP_PORT}`);
 });

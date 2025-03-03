@@ -1,6 +1,6 @@
 import { FC, ReactNode } from 'react';
 import { StyledLayout, StyledLayoutInner } from './Layout.styled';
-import { Footer } from '@components/Footer';
+// import { Footer } from '@components/Footer';
 
 interface LayoutProps {
   children: ReactNode;
@@ -11,7 +11,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     <StyledLayout>
       <StyledLayoutInner>
         {children}
-        <Footer />
+        {/* <Footer /> */}
       </StyledLayoutInner>
     </StyledLayout>
   );
