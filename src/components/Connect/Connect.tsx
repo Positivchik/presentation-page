@@ -49,6 +49,7 @@ export const Connect: FC<{
           addPoints={addPoints}
           type={step}
           channelId={channelId}
+          onClose={() => setStep(null)}
         />
       )}
     </div>

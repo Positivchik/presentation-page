@@ -28,5 +28,5 @@ export const useWebSocket = (
     }
   };
 
-  return { sendMessage };
+  return { sendMessage, close: () => socket?.close() };
 };

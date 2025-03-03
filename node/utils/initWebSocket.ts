@@ -1,7 +1,12 @@
 import http from 'http';
 import { Express } from 'express';
 import { WebSocket, WebSocketServer } from 'ws';
-import { store, ChannelsSlice, getOtherChannelUsers, getUsers } from '@node/store';
+import {
+  store,
+  ChannelsSlice,
+  getOtherChannelUsers,
+  getUsers,
+} from '@node/store';
 import crypto from 'crypto';
 import { WEBSOCKER_PORT } from '@node/constants';
 import {
@@ -37,7 +42,7 @@ export const initWebSocket = (app: Express) => {
             const data: TUpdateResponse = {
               type: WSEvents.UPDATE,
               payload: {
-                userId,
+                userId: currentUser.userId,
                 name: currentUser.name,
                 position: typedData.payload,
               },
@@ -106,17 +111,18 @@ export const initWebSocket = (app: Express) => {
     });
 
     ws.on('close', () => {
-      getOtherChannelUsers(userId)?.forEach(({ userId }) => {
+      const { currentUser, otherUsers } = getUsers(userId);
+      otherUsers.forEach(({ userId }) => {
         const ws = WebSocketMap[userId];
         const data: TCloseResponse = {
           type: WSEvents.CLOSE,
-          payload: userId,
+          payload: currentUser.userId,
         };
 
         ws?.send(JSON.stringify(data));
       });
 
-      store.dispatch(ChannelsSlice.actions.disconnectChannel({ userId }));
+      store.dispatch(ChannelsSlice.actions.disconnectUser({ userId }));
       delete WebSocketMap[userId];
 
       console.log('Client disconnected');

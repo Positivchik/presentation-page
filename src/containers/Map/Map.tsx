@@ -63,12 +63,7 @@ export const Map: FC<MapProps> = ({ initialPosition }) => {
 
   return (
     <Flexbox flexDirection="column" height="100vh">
-      <Connect
-        position={position}
-        addPoints={(data) => {
-          setOtherPointers(data);
-        }}
-      />
+      <Connect position={position} addPoints={setOtherPointers} />
       {position && (
         <YandexMap
           initialPosition={position}

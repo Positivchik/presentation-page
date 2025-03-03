@@ -25,7 +25,7 @@ export const ChannelsSlice = createSlice({
       const { userId } = action.payload;
       state.channels[userId] = [action.payload];
     },
-    disconnectChannel: (state, action: PayloadAction<{ userId: string }>) => {
+    disconnectUser: (state, action: PayloadAction<{ userId: string }>) => {
       const { userId } = action.payload;
       const isOwner = !!state.channels[userId];
 
@@ -34,12 +34,13 @@ export const ChannelsSlice = createSlice({
       } else {
         const [channelId, users] =
           Object.entries(state.channels).find(([, users]) =>
-            users.find(({ userId }) => userId === userId)
+            users.find(({ userId: id }) => id === userId)
           ) || [];
 
-        const filteredChannel =
-          users?.filter(({ userId: id }) => id !== userId) || [];
-        if (channelId) {
+        if (channelId && users) {
+          const filteredChannel = users?.filter(
+            ({ userId: id }) => id !== userId
+          );
           state.channels[channelId] = filteredChannel;
         }
       }
@@ -74,11 +75,11 @@ export const getOtherChannelUsers = (userId: string) =>
 export const getCurrentUser = (userId: string) =>
   findChannelUsersSelector(userId)?.filter(({ userId: id }) => id === userId);
 export const getUsers = (userId: string) => {
-  const users = findChannelUsersSelector(userId);
+  const allUsers = findChannelUsersSelector(userId);
   const otherUsers: TPayload[] = [];
   let currentUser = null as unknown as TPayload;
 
-  users.forEach((user) => {
+  allUsers.forEach((user) => {
     if (user.userId === userId) {
       currentUser = user;
     } else {
@@ -86,5 +87,5 @@ export const getUsers = (userId: string) => {
     }
   });
 
-  return { otherUsers, currentUser };
+  return { otherUsers, currentUser, allUsers };
 };

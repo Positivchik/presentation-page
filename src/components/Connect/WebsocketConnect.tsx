@@ -13,8 +13,9 @@ export interface WebsocketConnectProps {
   type: 'connect' | 'create';
   name: string;
   position: TPosition;
-  addPoints: (data: TUpdatePayload[]) => void;
+  addPoints: React.Dispatch<React.SetStateAction<TUpdatePayload[]>>;
   channelId: string;
+  onClose: () => void;
 }
 
 export const WebsocketConnect: FC<WebsocketConnectProps> = ({
@@ -23,10 +24,11 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
   position,
   addPoints,
   channelId,
+  onClose,
 }) => {
   const [isReady, setIsReady] = useState<boolean>(false);
 
-  const { sendMessage } = useWebSocket(
+  const { sendMessage, close } = useWebSocket(
     `ws://localhost:${WEBSOCKER_PORT}`,
     (ws) => {
       if (type === 'connect') {
@@ -65,6 +67,21 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
         alert(channelUrl);
 
         console.log(channelUrl);
+      }
+
+      if (parsedData.type === 'close') {
+        // Если создатель канала отключается, то прерываем соединение
+        if (parsedData.payload === channelId) {
+          close();
+          onClose();
+          addPoints([]);
+        } else {
+          addPoints((v) =>
+            v.filter(({ userId }) => {
+              return parsedData.payload !== userId;
+            })
+          );
+        }
       }
     }
   );
