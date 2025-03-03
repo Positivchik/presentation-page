@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
   res.send(file);
 });
 
-app.listen(APP_PORT, 'localhost', () => {
+app.listen(APP_PORT, () => {
   console.log(`🚀 Server running at:`);
   console.log(`   - Local:   http://localhost:${APP_PORT}`);
 });
