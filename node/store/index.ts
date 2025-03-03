@@ -71,3 +71,20 @@ export const findChannelUsersSelector = (userId: string) =>
   ) || [];
 export const getOtherChannelUsers = (userId: string) =>
   findChannelUsersSelector(userId)?.filter(({ userId: id }) => id !== userId);
+export const getCurrentUser = (userId: string) =>
+  findChannelUsersSelector(userId)?.filter(({ userId: id }) => id === userId);
+export const getUsers = (userId: string) => {
+  const users = findChannelUsersSelector(userId);
+  const otherUsers: TPayload[] = [];
+  let currentUser = null as unknown as TPayload;
+
+  users.forEach((user) => {
+    if (user.userId === userId) {
+      currentUser = user;
+    } else {
+      otherUsers.push(user);
+    }
+  });
+
+  return { otherUsers, currentUser };
+};
