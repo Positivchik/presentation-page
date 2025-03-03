@@ -1,7 +1,12 @@
 import http from 'http';
 import { Express } from 'express';
 import { WebSocket, WebSocketServer } from 'ws';
-import { store, ChannelsSlice, getUsers } from '@node/store';
+import {
+  store,
+  ChannelsSlice,
+  getUsersSelector,
+  getChannelsSelector,
+} from '@node/store';
 import crypto from 'crypto';
 import { WEBSOCKER_PORT } from '@node/constants';
 import {
@@ -31,7 +36,7 @@ export const initWebSocket = (app: Express) => {
       switch (parsedData.type) {
         case 'update': {
           const typedData: TUpdateRequest = parsedData;
-          const { currentUser, otherUsers } = getUsers(userId);
+          const { currentUser, otherUsers } = getUsersSelector(userId);
           otherUsers.forEach(({ userId }) => {
             const ws = WebSocketMap[userId];
             const data: TUpdateResponse = {
@@ -67,9 +72,9 @@ export const initWebSocket = (app: Express) => {
         case 'connect': {
           const typedData: TConnectRequest = parsedData;
           const { channelId } = typedData.payload;
-          const { otherUsers } = getUsers(userId);
-
-          if (otherUsers.length >= 2) {
+          const { otherUsers } = getUsersSelector(userId);
+          const channels = getChannelsSelector();
+          if (otherUsers.length >= 2 || !channels[channelId]) {
             ws.close();
             return;
           }
@@ -82,7 +87,7 @@ export const initWebSocket = (app: Express) => {
           );
           ws.send(JSON.stringify({ type: 'connect', payload: userId }));
 
-          const { otherUsers: otherUsersUpdated } = getUsers(userId);
+          const { otherUsers: otherUsersUpdated } = getUsersSelector(userId);
           otherUsersUpdated.forEach(({ userId: anotherUserId }) => {
             const ws = WebSocketMap[userId];
             const position = usersPositions[anotherUserId];
@@ -108,14 +113,13 @@ export const initWebSocket = (app: Express) => {
     });
 
     ws.on('close', () => {
-      const { currentUser, otherUsers } = getUsers(userId);
+      const { currentUser, otherUsers } = getUsersSelector(userId);
       otherUsers.forEach(({ userId }) => {
-        const ws = WebSocketMap[userId];
         const data: TCloseResponse = {
           type: WSEvents.CLOSE,
           payload: currentUser.userId,
         };
-
+        const ws = WebSocketMap[userId];
         ws?.send(JSON.stringify(data));
       });
 

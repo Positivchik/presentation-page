@@ -70,11 +70,11 @@ export const findChannelUsersSelector = (userId: string) =>
     users?.some(({ userId: id }) => id === userId)
   ) || [];
 
-export const getUsers = (userId: string) => {
+export const getUsersSelector = (userId: string) => {
   const allUsers = findChannelUsersSelector(userId);
   const otherUsers: TPayload[] = [];
   let currentUser = null as unknown as TPayload;
-debugger;
+
   allUsers.forEach((user) => {
     if (user.userId === userId) {
       currentUser = user;

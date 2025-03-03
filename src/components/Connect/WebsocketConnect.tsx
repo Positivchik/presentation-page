@@ -13,7 +13,7 @@ export interface WebsocketConnectProps {
   >;
   channelId: string;
   onClose: () => void;
-  onOpen: (status: WebsocketConnectProps['type']) => void;
+  onOpen: (status: WebsocketConnectProps['type'] | null) => void;
 }
 
 export const WebsocketConnect: FC<WebsocketConnectProps> = ({
@@ -71,6 +71,8 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
         if (parsedData.payload === channelId) {
           close();
           onClose();
+        } else {
+          onOpen(null);
         }
         setAnotherPosition(null);
       }
