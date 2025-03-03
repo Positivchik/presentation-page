@@ -1,33 +1,32 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import { WebsocketConnect, WebsocketConnectProps } from './WebsocketConnect';
 import { TPosition } from '@node/types/WS';
-import { getUrlParam } from '@utils/getUrlParam';
+import { Button, Flex, Modal, Typography } from 'antd';
+import {
+  StyledBlock,
+  StyledBlockWrapper,
+  StyledButtonsWrapper,
+} from './Connect.styled';
+import { JoinModal } from './JoinModal';
 import { CHANNEL_URL_PARAM } from '@constants/index';
-import { Button, Flex, Input, Modal } from 'antd';
+const { Paragraph, Text } = Typography;
 
 export const Connect: FC<{
   position: TPosition;
   setAnotherPosition: WebsocketConnectProps['setAnotherPosition'];
 }> = ({ position, setAnotherPosition }) => {
   const [step, setStep] = useState<WebsocketConnectProps['type'] | null>(null);
-  const [channelId, setChannelId] = useState<string>(
-    getUrlParam(CHANNEL_URL_PARAM) || ''
-  );
+  const [channelId, setChannelId] = useState<string | undefined>();
   const [status, setStatus] = useState<null | WebsocketConnectProps['type']>(
     null
   );
+  const [createChannelId, setCreateChannelId] = useState<null | string>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (channelId) {
-      setIsModalOpen(true);
-    }
-  }, []);
 
   return (
     <div>
-      <Modal
-        title="Подключение"
+      {/* <Modal
+        title="Создать канал"
         open={isModalOpen}
         onOk={() => {
           setStep('connect');
@@ -40,41 +39,40 @@ export const Connect: FC<{
           value={channelId}
           onChange={(e) => setChannelId(e.target.value)}
         />
-      </Modal>
-      <div
-        style={{
-          position: 'absolute',
-          zIndex: 1,
-        }}
-      >
-        {/* <input
-          placeholder="ИД канала"
-          onChange={(e) => {
-            setChannelId(e.target.value);
-          }}
-          value={channelId}
-          disabled={!!status}
-        /> */}
+      </Modal> */}
+
+      <StyledButtonsWrapper>
         <Flex gap={8}>
+          <Modal
+            title="Канал создан!"
+            open={isModalOpen}
+            onOk={() => setIsModalOpen(false)}
+            onCancel={() => setIsModalOpen(false)}
+          >
+            <StyledBlockWrapper>
+              <StyledBlock>{createChannelId}</StyledBlock>
+            </StyledBlockWrapper>
+            <Paragraph
+              copyable
+            >{`${window.location.origin}?${CHANNEL_URL_PARAM}=${createChannelId}`}</Paragraph>
+          </Modal>
           <Button
             color="primary"
             variant="filled"
             disabled={!!status}
             onClick={() => setStep('create')}
           >
-            Создать
+            Создать канал
           </Button>
-          <Button
-            color="primary"
-            variant="filled"
-            // disabled={!channelId || !!status}
-            disabled={!!status}
-            onClick={() => setIsModalOpen(true)}
-          >
-            Подключиться
-          </Button>
+          <JoinModal
+            onOk={(channelId) => {
+              setChannelId(channelId);
+              setStep('connect');
+            }}
+            isDisabled={!!status}
+          />
         </Flex>
-      </div>
+      </StyledButtonsWrapper>
       {step && (
         <WebsocketConnect
           position={position}
@@ -83,6 +81,10 @@ export const Connect: FC<{
           channelId={channelId}
           onClose={() => setStep(null)}
           onOpen={(v) => setStatus(v)}
+          onCreate={(channelId) => {
+            setCreateChannelId(channelId);
+            setIsModalOpen(true);
+          }}
         />
       )}
     </div>

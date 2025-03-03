@@ -11,9 +11,10 @@ export interface WebsocketConnectProps {
   setAnotherPosition: React.Dispatch<
     React.SetStateAction<TAnotherPositionState>
   >;
-  channelId: string;
+  channelId?: string;
   onClose: () => void;
   onOpen: (status: WebsocketConnectProps['type'] | null) => void;
+  onCreate: (channelId: string) => void;
 }
 
 export const WebsocketConnect: FC<WebsocketConnectProps> = ({
@@ -23,13 +24,14 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
   channelId,
   onClose,
   onOpen,
+  onCreate,
 }) => {
   const [isReady, setIsReady] = useState<boolean>(false);
 
   const { sendMessage, close } = useWebSocket(
     `ws://localhost:${WEBSOCKER_PORT}`,
     (ws) => {
-      if (type === 'connect') {
+      if (type === 'connect' && channelId) {
         const data: TConnectRequest = {
           type: WSEvents.CONNECT,
           payload: {
@@ -60,10 +62,11 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
       }
 
       if (parsedData.type === 'create') {
-        const channelUrl = `${window.location.origin}?${CHANNEL_URL_PARAM}=${parsedData.payload}`;
-        alert(channelUrl);
+        onCreate(parsedData.payload);
+        // const channelUrl = `${window.location.origin}?${CHANNEL_URL_PARAM}=${parsedData.payload}`;
+        // alert(channelUrl);
 
-        console.log(channelUrl);
+        // console.log(channelUrl);
       }
 
       if (parsedData.type === 'close') {
@@ -71,6 +74,9 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
         if (parsedData.payload === channelId) {
           close();
           onClose();
+        }
+        {
+          onOpen(null);
         }
         setAnotherPosition(null);
       }
