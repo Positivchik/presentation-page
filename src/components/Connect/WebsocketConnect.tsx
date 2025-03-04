@@ -28,7 +28,7 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
   const [isReady, setIsReady] = useState<boolean>(false);
 
   const { sendMessage, close } = useWebSocket(
-    `ws://${location.hostname}:${WEBSOCKER_PORT}`,
+    `wss://${location.hostname}:${WEBSOCKER_PORT}`,
     (ws) => {
       if (type === 'connect' && channelId) {
         const data: TConnectRequest = {
