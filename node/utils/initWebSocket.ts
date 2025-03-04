@@ -136,7 +136,7 @@ export const initWebSocket = (app: Express) => {
 
   wss.on('connection', handleWSConnection);
 
-  server.listen(WEBSOCKER_PORT, '0.0.0.0', () => {
+  server.listen(WEBSOCKER_PORT, () => {
     console.log(`Server is listening on http://localhost:${WEBSOCKER_PORT}`);
   });
 };
