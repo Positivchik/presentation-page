@@ -3,8 +3,10 @@ import fs from 'fs';
 import { APP_PORT } from '@node/constants';
 import { initWebSocket } from './utils/initWebSocket';
 import bodyParser from 'body-parser';
+import http from 'http';
 
 const app = express();
+const server = http.createServer(app);
 
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} Request from: ${req.hostname}`);
@@ -14,14 +16,14 @@ app.use((req, res, next) => {
 app.use(express.static('./dist/browser'));
 app.use(bodyParser.json());
 
-initWebSocket(app);
+initWebSocket(server);
 
 app.get('/', (req, res) => {
   const file = fs.readFileSync('./dist/browser/index.html', 'utf-8');
   res.send(file);
 });
 
-app.listen(APP_PORT, () => {
+server.listen(APP_PORT, () => {
   console.log(`🚀 Server running at:`);
   console.log(`   - Local:   http://localhost:${APP_PORT}`);
 });

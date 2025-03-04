@@ -23,11 +23,13 @@ import { callRecursive } from './callRecursive';
 const WebSocketMap: Record<string, WebSocket> = {};
 const usersPositions: Record<string, [number, number]> = {};
 
-export const initWebSocket = (app: Express) => {
-  const server = http.createServer(app);
-  const wss = new WebSocketServer({ server });
+export const initWebSocket = (
+  server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>
+) => {
+  const wss = new WebSocketServer({ server, path: '/ws' });
 
   const handleWSConnection = (ws: WebSocket) => {
+    console.log('Клиент подключился к WebSocket');
     const userId = callRecursive(
       () => String(getRandomNumber(3)),
       (v) => !WebSocketMap[v]
@@ -135,8 +137,4 @@ export const initWebSocket = (app: Express) => {
   };
 
   wss.on('connection', handleWSConnection);
-
-  server.listen(WEBSOCKER_PORT, '0.0.0.0', () => {
-    console.log(`Server is listening on http://localhost:${WEBSOCKER_PORT}`);
-  });
 };
