@@ -14,4 +14,6 @@ run:
   args: null
   persistenceMount: /data
   containerPort: 3000
-  servicePort: 8080
+  servicePort: 80
+  additionalPorts:
+    - 8080
