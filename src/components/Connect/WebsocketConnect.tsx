@@ -1,7 +1,6 @@
 import { useWebSocket } from '@utils/useWebSocket';
 import { FC, useEffect, useState } from 'react';
 import { WEBSOCKER_PORT } from '@node/constants';
-import { CHANNEL_URL_PARAM } from '@constants/index';
 import { TConnectRequest, TPosition, WSEvents } from '@node/types/WS';
 import { TAnotherPositionState } from '@containers/Map/Map';
 
@@ -29,7 +28,7 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
   const [isReady, setIsReady] = useState<boolean>(false);
 
   const { sendMessage, close } = useWebSocket(
-    `wss://${location.hostname}:${WEBSOCKER_PORT}`,
+    `ws://${location.hostname}:${WEBSOCKER_PORT}`,
     (ws) => {
       if (type === 'connect' && channelId) {
         const data: TConnectRequest = {
