@@ -1,5 +1,4 @@
 import http from 'http';
-import { Express } from 'express';
 import { WebSocket, WebSocketServer } from 'ws';
 import {
   store,
@@ -7,7 +6,6 @@ import {
   getUsersSelector,
   getChannelsSelector,
 } from '@node/store';
-import { WEBSOCKER_PORT } from '@node/constants';
 import {
   TCloseResponse,
   TConnectRequest,
