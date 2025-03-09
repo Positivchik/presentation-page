@@ -1,7 +1,7 @@
 import express from 'express';
 import fs from 'fs';
 import { APP_PORT } from '@node/constants';
-import { initWebSocket } from './utils/initWebSocket';
+import { initSocketIO } from './utils/initSocketIO';
 import bodyParser from 'body-parser';
 import http from 'http';
 
@@ -16,7 +16,7 @@ app.use((req, res, next) => {
 app.use(express.static('./dist/browser'));
 app.use(bodyParser.json());
 
-initWebSocket(server);
+initSocketIO(server);
 
 app.get('/', (req, res) => {
   const file = fs.readFileSync('./dist/browser/index.html', 'utf-8');

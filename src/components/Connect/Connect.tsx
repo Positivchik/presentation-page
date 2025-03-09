@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { WebsocketConnect, WebsocketConnectProps } from './WebsocketConnect';
+import { SocketIOConnect, SocketIOConnectProps } from './SocketIOConnect';
 import { TPosition } from '@node/types/WS';
 import { Button, Flex, Modal, Typography } from 'antd';
 import {
@@ -9,15 +9,15 @@ import {
 } from './Connect.styled';
 import { JoinModal } from './JoinModal';
 import { CHANNEL_URL_PARAM } from '@constants/index';
-const { Paragraph, Text } = Typography;
+const { Paragraph } = Typography;
 
 export const Connect: FC<{
   position: TPosition;
-  setAnotherPosition: WebsocketConnectProps['setAnotherPosition'];
+  setAnotherPosition: SocketIOConnectProps['setAnotherPosition'];
 }> = ({ position, setAnotherPosition }) => {
-  const [step, setStep] = useState<WebsocketConnectProps['type'] | null>(null);
+  const [step, setStep] = useState<SocketIOConnectProps['type'] | null>(null);
   const [channelId, setChannelId] = useState<string | undefined>();
-  const [status, setStatus] = useState<null | WebsocketConnectProps['type']>(
+  const [status, setStatus] = useState<null | SocketIOConnectProps['type']>(
     null
   );
   const [createChannelId, setCreateChannelId] = useState<null | string>(null);
@@ -74,7 +74,7 @@ export const Connect: FC<{
         </Flex>
       </StyledButtonsWrapper>
       {step && (
-        <WebsocketConnect
+        <SocketIOConnect
           position={position}
           setAnotherPosition={setAnotherPosition}
           type={step}

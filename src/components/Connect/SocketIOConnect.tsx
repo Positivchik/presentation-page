@@ -1,10 +1,9 @@
-import { useWebSocket } from '@utils/useWebSocket';
+import { useSocket } from '@utils/useSocket';
 import { FC, useEffect, useState } from 'react';
-import { APP_PORT } from '@node/constants';
 import { TConnectRequest, TPosition, WSEvents } from '@node/types/WS';
 import { TAnotherPositionState } from '@containers/Map/Map';
 
-export interface WebsocketConnectProps {
+export interface SocketIOConnectProps {
   type: 'connect' | 'create';
   position: TPosition;
   setAnotherPosition: React.Dispatch<
@@ -12,11 +11,11 @@ export interface WebsocketConnectProps {
   >;
   channelId?: string;
   onClose: () => void;
-  onOpen: (status: WebsocketConnectProps['type'] | null) => void;
+  onOpen: (status: SocketIOConnectProps['type'] | null) => void;
   onCreate: (channelId: string) => void;
 }
 
-export const WebsocketConnect: FC<WebsocketConnectProps> = ({
+export const SocketIOConnect: FC<SocketIOConnectProps> = ({
   type,
   position,
   setAnotherPosition,
@@ -27,10 +26,9 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
 }) => {
   const [isReady, setIsReady] = useState<boolean>(false);
 
-  const { sendMessage, close } = useWebSocket(
-    // `${window.location.href.startsWith('https') ? 'wss' : 'ws'}://${location.hostname}:${APP_PORT}/ws`,
+  const { sendMessage, close } = useSocket(
     window.location.origin,
-    (ws) => {
+    (socket) => {
       if (type === 'connect' && channelId) {
         const data: TConnectRequest = {
           type: WSEvents.CONNECT,
@@ -39,9 +37,9 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
           },
         };
 
-        ws.emit('message', JSON.stringify(data));
+        socket.emit('message', JSON.stringify(data));
       } else {
-        ws.emit(
+        socket.emit(
           'message',
           JSON.stringify({
             type: WSEvents.CREATE,
@@ -65,10 +63,6 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
 
       if (parsedData.type === 'create') {
         onCreate(parsedData.payload);
-        // const channelUrl = `${window.location.origin}?${CHANNEL_URL_PARAM}=${parsedData.payload}`;
-        // alert(channelUrl);
-
-        // console.log(channelUrl);
       }
 
       if (parsedData.type === 'close') {
