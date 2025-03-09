@@ -28,7 +28,8 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
   const [isReady, setIsReady] = useState<boolean>(false);
 
   const { sendMessage, close } = useWebSocket(
-    `${window.location.href.startsWith('https') ? 'wss' : 'ws'}://${location.hostname}:${APP_PORT}/ws`,
+    // `${window.location.href.startsWith('https') ? 'wss' : 'ws'}://${location.hostname}:${APP_PORT}/ws`,
+    window.location.origin,
     (ws) => {
       if (type === 'connect' && channelId) {
         const data: TConnectRequest = {
@@ -38,9 +39,10 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
           },
         };
 
-        ws.send(JSON.stringify(data));
+        ws.emit('message', JSON.stringify(data));
       } else {
-        ws.send(
+        ws.emit(
+          'message',
           JSON.stringify({
             type: WSEvents.CREATE,
             payload: {
@@ -53,8 +55,9 @@ export const WebsocketConnect: FC<WebsocketConnectProps> = ({
       setIsReady(true);
       onOpen(type);
     },
-    (e) => {
-      const parsedData = JSON.parse(e.data as string);
+    (message) => {
+      console.log('message', message);
+      const parsedData = JSON.parse(message);
 
       if (parsedData.type === 'update') {
         setAnotherPosition(parsedData.payload);
