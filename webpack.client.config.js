@@ -9,7 +9,7 @@ module.exports = {
   mode: 'development',
   entry: './src/index.tsx',
   output: {
-    filename: "bundle.[contenthash].js",
+    filename: 'bundle.[contenthash].js',
     path: path.resolve(__dirname, 'dist', 'browser'),
     clean: true,
   },
@@ -22,6 +22,7 @@ module.exports = {
       '@constants': path.resolve(__dirname, 'src/constants'),
       '@node': path.resolve(__dirname, 'node'),
       '@types': path.resolve(__dirname, 'src/types'),
+      src: path.resolve(__dirname, 'src'),
     },
   },
   module: {
