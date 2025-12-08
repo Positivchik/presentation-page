@@ -3,34 +3,86 @@ import {
   COUNTRIES_NEIGHTBOURS,
   Country,
 } from '@constants/countries';
-import { AutoComplete } from 'antd';
+import { AutoComplete, notification } from 'antd';
 import React, { FC, useState } from 'react';
 
 const getRandomNumber = (min = 0, max = 200) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-const MAX_ERRORS = 3;
-
 export const Countries: FC = () => {
+  const [passedList, setPassedList] = useState<Country[]>([]);
+  const [errorsCount, setErrorsCount] = useState<number>(0);
   const [input, setInput] = useState<string>('');
-  const [errorsCount, setErrorsCount] = useState<number>(MAX_ERRORS);
   const [selectedCountry, setSelectedCountry] = useState<Country>(
     COUNTRIES[getRandomNumber(0, COUNTRIES.length)]
   );
 
+  if (!COUNTRIES_NEIGHTBOURS[selectedCountry]) {
+    alert(
+      'Заполни соседей: ' +
+        selectedCountry +
+        '. Заполнено: ' +
+        Object.values(COUNTRIES_NEIGHTBOURS).length +
+        ' из ' +
+        COUNTRIES.length
+    );
+  }
+
   const handleGenerateNewQuestion = () => {
     const selectCountryNumber = getRandomNumber(0, COUNTRIES.length);
-    setSelectedCountry(COUNTRIES[selectCountryNumber]);
+    const newCountry = COUNTRIES[selectCountryNumber];
+    if (passedList.includes(newCountry)) {
+      handleGenerateNewQuestion();
+      return;
+    }
+    setSelectedCountry(newCountry);
   };
 
+  const handleCheck = () => {
+    if (!COUNTRIES_NEIGHTBOURS[selectedCountry]) {
+      alert('Заведи страны соседи:' + selectedCountry);
+      return;
+    }
+    const isFoundNeighbour = COUNTRIES_NEIGHTBOURS[selectedCountry].some(
+      (country) => country === input
+    );
+
+    const isNoNeighbour =
+      !input.length && COUNTRIES_NEIGHTBOURS[selectedCountry].length === 0;
+
+    if (isFoundNeighbour || isNoNeighbour) {
+      // alert(
+      //   'Угадал! Страна:' + selectedCountry + 'имеет соседа:' + input
+      // );
+      handleGenerateNewQuestion();
+      setPassedList(passedList.concat(selectedCountry));
+      notification['success']({
+        title: 'Верно!',
+        description: `Страна ${selectedCountry} является соседом ${input}`,
+      });
+    } else {
+      setErrorsCount(errorsCount + 1);
+      notification['error']({
+        title: 'Не правильно!',
+        description: `Страна ${selectedCountry} НЕ является соседом ${input}`,
+      });
+    }
+  };
+
+  // Флаги
+  // Столицы
   // Страны континенты
   // Выбери количество соседей
   // Какая столица
   return (
     <section>
       <h1>Игра &quot;Страны-соседи&quot;</h1>
-      <div>Максимально ошибок: 3, осталось {errorsCount}</div>
+      <div>
+        Пройдено: {passedList.length} из {COUNTRIES.length}
+      </div>
+      <div>Ошибок: {errorsCount}</div>
+
       <div>{selectedCountry}</div>
       <AutoComplete
         value={input}
@@ -42,29 +94,26 @@ export const Countries: FC = () => {
         onSearch={setInput}
         placeholder="input here"
       />
-      <button
-        onClick={() => {
-          if (!COUNTRIES_NEIGHTBOURS[selectedCountry]) {
-            alert('Заведи страны соседи:' + selectedCountry);
-            return;
-          }
-          if (
-            COUNTRIES_NEIGHTBOURS[selectedCountry].some(
-              (country) => country === input
-            )
-          ) {
-            alert(
-              'Угадал! Страна:' + selectedCountry + 'имеет соседа:' + input
-            );
-          } else {
-            alert('Не угадал!');
-          }
-        }}
-      >
+      <button onClick={handleCheck}>Соседей нету!</button>
+      <button disabled={!input} onClick={handleCheck}>
         Проверь
       </button>
 
-      <button onClick={handleGenerateNewQuestion}>Выбрать другую</button>
+      <button
+        disabled={passedList.length < COUNTRIES.length}
+        onClick={handleGenerateNewQuestion}
+      >
+        Выбрать другую
+      </button>
+      <button
+        onClick={() => {
+          setPassedList([]);
+          setErrorsCount(0);
+          handleGenerateNewQuestion();
+        }}
+      >
+        Обнулить
+      </button>
     </section>
   );
 };

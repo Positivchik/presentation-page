@@ -191,9 +191,80 @@ export enum Country {
   SOUTH_SUDAN = 'Южный Судан',
   JAMAICA = 'Ямайка',
   JAPAN = 'Япония',
+  GAZE = 'Сектор Газа',
+  WESTERN_SAHARA = 'Западная Сахара',
+  PALESTINE = 'Палестина',
+  KOSOVO = 'Косово',
 }
 
 // Массив всех стран из enum (для обратной совместимости)
 export const COUNTRIES: Country[] = Object.values(Country);
 
-export const COUNTRIES_NEIGHTBOURS: Partial<Record<Country, Country[]>> = {};
+export const COUNTRIES_NEIGHTBOURS: Partial<Record<Country, Country[]>> = {
+  [Country.TUNISIA]: [Country.LIBYA, Country.ALGERIA],
+  [Country.IRAN]: [
+    Country.TURKMENISTAN,
+    Country.AFGHANISTAN,
+    Country.PAKISTAN,
+    Country.KUWAIT,
+    Country.IRAQ,
+    Country.TURKEY,
+    Country.AZERBAIJAN,
+  ],
+  [Country.CUBA]: [],
+  [Country.EGYPT]: [Country.LIBYA, Country.SUDAN, Country.GAZE, Country.ISRAEL],
+  [Country.SAMOA]: [],
+  [Country.ALGERIA]: [
+    Country.TUNISIA,
+    Country.LIBYA,
+    Country.NIGER,
+    Country.MALI,
+    Country.MAURITANIA,
+    Country.MOROCCO,
+  ],
+  [Country.TOGO]: [Country.GHANA, Country.BENIN, Country.BURKINA_FASO],
+  [Country.ROMANIA]: [
+    Country.UKRAINE,
+    Country.MOLDOVA,
+    Country.BULGARIA,
+    Country.SERBIA,
+    Country.HUNGARY,
+  ],
+  [Country.JORDAN]: [
+    Country.SYRIA,
+    Country.IRAQ,
+    Country.SAUDI_ARABIA,
+    Country.ISRAEL,
+    Country.PALESTINE,
+  ],
+  [Country.MICRONESIA]: [],
+  [Country.NEW_ZEALAND]: [],
+  [Country.SAUDI_ARABIA]: [
+    Country.JORDAN,
+    Country.IRAQ,
+    Country.KUWAIT,
+    Country.BAHRAIN,
+    Country.QATAR,
+    Country.UNITED_ARAB_EMIRATES,
+    Country.OMAN,
+    Country.YEMEN,
+  ],
+  [Country.NORTH_MACEDONIA]: [
+    Country.GREECE,
+    Country.ALBANIA,
+    Country.KOSOVO,
+    Country.SERBIA,
+    Country.BULGARIA,
+  ],
+  [Country.ERITREA]: [Country.SUDAN, Country.DJIBOUTI, Country.ETHIOPIA],
+  [Country.EL_SALVADOR]: [Country.GUATEMALA, Country.HONDURAS],
+  [Country.PERU]: [
+    Country.EQUATORIAL_GUINEA,
+    Country.COLOMBIA,
+    Country.BRAZIL,
+    Country.BOLIVIA,
+    Country.CHILE,
+  ],
+  [Country.MARSHALL_ISLANDS]: [],
+  [Country.VENEZUELA]: [Country.COLOMBIA, Country.BRAZIL, Country.GUYANA],
+};
