@@ -5,9 +5,7 @@ import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import { ROUTES } from './constants';
 import { Menu } from 'antd';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <BrowserRouter>
     <Global

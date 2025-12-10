@@ -10,9 +10,7 @@ interface JoinModalProps {
 
 export const JoinModal: FC<JoinModalProps> = ({ onOk, isDisabled }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [channelId, setChannelId] = useState<string>(
-    getUrlParam(CHANNEL_URL_PARAM) || ''
-  );
+  const [channelId, setChannelId] = useState<string>(getUrlParam(CHANNEL_URL_PARAM) || '');
 
   useEffect(() => {
     if (channelId) {
@@ -22,12 +20,7 @@ export const JoinModal: FC<JoinModalProps> = ({ onOk, isDisabled }) => {
 
   return (
     <>
-      <Button
-        color="primary"
-        variant="filled"
-        disabled={isDisabled}
-        onClick={() => setIsModalOpen(true)}
-      >
+      <Button color="primary" variant="filled" disabled={isDisabled} onClick={() => setIsModalOpen(true)}>
         Подключиться
       </Button>
       <Modal
@@ -39,11 +32,7 @@ export const JoinModal: FC<JoinModalProps> = ({ onOk, isDisabled }) => {
         }}
         onCancel={() => setIsModalOpen(false)}
       >
-        <Input
-          placeholder="Введите номер канала"
-          value={channelId}
-          onChange={(e) => setChannelId(e.target.value)}
-        />
+        <Input placeholder="Введите номер канала" value={channelId} onChange={(e) => setChannelId(e.target.value)} />
       </Modal>
     </>
   );

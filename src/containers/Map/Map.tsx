@@ -16,8 +16,7 @@ interface MapProps {
 export const Map: FC<MapProps> = ({ initialPosition }) => {
   const [position, setPosition] = useState<TPosition>(initialPosition);
   const [map, setMap] = useState<null | ymaps.Map>(null);
-  const [anotherPosition, setAnotherPosition] =
-    useState<TAnotherPositionState>(null);
+  const [anotherPosition, setAnotherPosition] = useState<TAnotherPositionState>(null);
 
   useEffect(() => {
     navigator.geolocation.watchPosition(
@@ -42,10 +41,7 @@ export const Map: FC<MapProps> = ({ initialPosition }) => {
 
   useEffect(() => {
     if (map && anotherPosition) {
-      const secondObject = createPoint(
-        USER_NAMES.another,
-        anotherPosition.position
-      );
+      const secondObject = createPoint(USER_NAMES.another, anotherPosition.position);
       map.geoObjects.add(secondObject);
 
       return () => {

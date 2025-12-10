@@ -2,11 +2,7 @@ import { FC, useState } from 'react';
 import { SocketIOConnect, SocketIOConnectProps } from './SocketIOConnect';
 import { TPosition } from '@node/types/WS';
 import { Button, Flex, Modal, Typography } from 'antd';
-import {
-  StyledBlock,
-  StyledBlockWrapper,
-  StyledButtonsWrapper,
-} from './Connect.styled';
+import { StyledBlock, StyledBlockWrapper, StyledButtonsWrapper } from './Connect.styled';
 import { JoinModal } from './JoinModal';
 import { CHANNEL_URL_PARAM } from '@constants/index';
 const { Paragraph } = Typography;
@@ -17,9 +13,7 @@ export const Connect: FC<{
 }> = ({ position, setAnotherPosition }) => {
   const [step, setStep] = useState<SocketIOConnectProps['type'] | null>(null);
   const [channelId, setChannelId] = useState<string | undefined>();
-  const [status, setStatus] = useState<null | SocketIOConnectProps['type']>(
-    null
-  );
+  const [status, setStatus] = useState<null | SocketIOConnectProps['type']>(null);
   const [createChannelId, setCreateChannelId] = useState<null | string>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -43,25 +37,13 @@ export const Connect: FC<{
 
       <StyledButtonsWrapper>
         <Flex gap={8}>
-          <Modal
-            title="Канал создан!"
-            open={isModalOpen}
-            onOk={() => setIsModalOpen(false)}
-            onCancel={() => setIsModalOpen(false)}
-          >
+          <Modal title="Канал создан!" open={isModalOpen} onOk={() => setIsModalOpen(false)} onCancel={() => setIsModalOpen(false)}>
             <StyledBlockWrapper>
               <StyledBlock>{createChannelId}</StyledBlock>
             </StyledBlockWrapper>
-            <Paragraph
-              copyable
-            >{`${window.location.origin}?${CHANNEL_URL_PARAM}=${createChannelId}`}</Paragraph>
+            <Paragraph copyable>{`${window.location.origin}?${CHANNEL_URL_PARAM}=${createChannelId}`}</Paragraph>
           </Modal>
-          <Button
-            color="primary"
-            variant="filled"
-            disabled={!!status}
-            onClick={() => setStep('create')}
-          >
+          <Button color="primary" variant="filled" disabled={!!status} onClick={() => setStep('create')}>
             Создать канал
           </Button>
           <JoinModal

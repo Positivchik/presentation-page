@@ -129,7 +129,7 @@ export enum Country {
   POLAND = 'Польша',
   PORTUGAL = 'Португалия',
   SOUTH_KOREA = 'Республика Корея',
-    NORTH_KOREA = 'Северная Корея',
+  NORTH_KOREA = 'Северная Корея',
   RUSSIA = 'Россия',
   RWANDA = 'Руанда',
   ROMANIA = 'Румыния',
@@ -251,7 +251,7 @@ export const COUNTRIES_NEIGHTBOURS: Partial<Record<Country, Country[]>> = {
   [Country.SIERRA_LEONE]: [Country.GUINEA, Country.LIBERIA],
   [Country.SURINAME]: [Country.FRENCH_GUIANA, Country.BRAZIL, Country.GUYANA],
   [Country.NORWAY]: [Country.SWEDEN, Country.FINLAND, Country.RUSSIA],
-  [Country.PAKISTAN]: [Country.AFGHANISTAN, Country.CHINA, Country.INDIA],
+  [Country.PAKISTAN]: [Country.AFGHANISTAN, Country.CHINA, Country.INDIA, Country.IRAN],
   [Country.TURKMENISTAN]: [Country.KAZAKHSTAN, Country.UZBEKISTAN, Country.AFGHANISTAN, Country.IRAN],
   [Country.VANUATU]: [],
   [Country.ESTONIA]: [Country.RUSSIA, Country.LATVIA],
@@ -306,8 +306,35 @@ export const COUNTRIES_NEIGHTBOURS: Partial<Record<Country, Country[]>> = {
   [Country.BOLIVIA]: [Country.BRAZIL, Country.PARAGUAY, Country.ARGENTINA, Country.CHILE, Country.PERU],
   [Country.COLOMBIA]: [Country.PANAMA, Country.VENEZUELA, Country.BRAZIL, Country.PERU, Country.ECUADOR],
   [Country.OMAN]: [Country.UNITED_ARAB_EMIRATES, Country.SAUDI_ARABIA, Country.YEMEN],
+  [Country.CZECH_REPUBLIC]: [Country.POLAND, Country.SLOVAKIA, Country.AUSTRIA, Country.GERMANY],
+  [Country.LIBYA]: [Country.EGYPT, Country.SUDAN, Country.CHAD, Country.NIGER, Country.ALGERIA, Country.TUNISIA],
+  [Country.CAMEROON]: [Country.NIGERIA, Country.CHAD, Country.CENTRAL_AFRICAN_REPUBLIC, Country.REPUBLIC_OF_CONGO, Country.GABON, Country.EQUATORIAL_GUINEA],
+  [Country.UNITED_ARAB_EMIRATES]: [Country.OMAN, Country.SAUDI_ARABIA],
+  [Country.SLOVAKIA]: [Country.POLAND, Country.UKRAINE, Country.HUNGARY, Country.AUSTRIA, Country.CZECH_REPUBLIC],
+  [Country.GUATEMALA]: [Country.BELIZE, Country.HONDURAS, Country.EL_SALVADOR, Country.MEXICO],
+  [Country.FINLAND]: [Country.SWEDEN, Country.NORWAY, Country.RUSSIA],
+  [Country.FRENCH_GUIANA]: [Country.SURINAME, Country.BRAZIL],
+  [Country.ECUADOR]: [Country.COLOMBIA, Country.PERU],
+  [Country.GIBRALTAR]: [Country.GIBRALTAR],
+  [Country.SYRIA]: [Country.TURKEY, Country.IRAQ, Country.JORDAN, Country.LEBANON, Country.ISRAEL],
+  [Country.COTE_DIVOIRE]: [Country.MALI, Country.BURKINA_FASO, Country.GHANA, Country.LIBERIA, Country.GUINEA],
+  [Country.CHAD]: [Country.SUDAN, Country.CENTRAL_AFRICAN_REPUBLIC, Country.CAMEROON, Country.NIGERIA, Country.NIGER, Country.LIBYA],
+  [Country.COMOROS]: [],
+  [Country.MOLDOVA]: [Country.UKRAINE, Country.ROMANIA],
+  [Country.KUWAIT]: [Country.IRAQ, Country.SAUDI_ARABIA],
+  [Country.TUVALU]: [],
+  [Country.BOTSWANA]: [Country.ZAMBIA, Country.ZIMBABWE, Country.SOUTH_AFRICA, Country.NAMIBIA],
+  [Country.AUSTRALIA]: [],
+  [Country.AUSTRIA]: [Country.CZECH_REPUBLIC, Country.SLOVAKIA, Country.HUNGARY, Country.SLOVENIA, Country.ITALY, Country.SWITZERLAND, Country.GERMANY],
+  [Country.ALBANIA]: [Country.MONTENEGRO, Country.KOSOVO, Country.NORTH_MACEDONIA, Country.GREECE],
+  [Country.ANDORRA]: [Country.FRANCE, Country.SPAIN],
+  [Country.ARGENTINA]: [Country.CHILE, Country.BOLIVIA, Country.PARAGUAY, Country.URUGUAY, Country.BRAZIL],
+  [Country.ARMENIA]: [Country.GEORGIA, Country.AZERBAIJAN, Country.IRAN, Country.TURKEY],
 };
 
 // Написать скрипт для проверки, что б все страны взаимно друг друга включали и ничего не упустил
 // Игра в угадать направление!
 // Сделать так, что б свопросом ещё видел и флаг
+// Как пишутся на англ
+// Страны на одну букву
+// 10 крупных стран, самые крупные страны по континентам

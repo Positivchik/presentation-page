@@ -1,8 +1,5 @@
-import {
-  COUNTRIES,
-  COUNTRIES_NEIGHTBOURS,
-  Country,
-} from '@constants/countries';
+import { COUNTRIES, COUNTRIES_NEIGHTBOURS, Country } from '@constants/countries';
+import { FLAGS } from '@constants/icons';
 import { AutoComplete, notification } from 'antd';
 import React, { FC, useState } from 'react';
 
@@ -14,19 +11,11 @@ export const Countries: FC = () => {
   const [passedList, setPassedList] = useState<Country[]>([]);
   const [errorsCount, setErrorsCount] = useState<number>(0);
   const [input, setInput] = useState<string>('');
-  const [selectedCountry, setSelectedCountry] = useState<Country>(
-    COUNTRIES[getRandomNumber(0, COUNTRIES.length)]
-  );
+  const [selectedCountry, setSelectedCountry] = useState<Country>(COUNTRIES[getRandomNumber(0, COUNTRIES.length)]);
 
-  if (!COUNTRIES_NEIGHTBOURS[selectedCountry]) {
-    alert(
-      'Заполни соседей: ' +
-        selectedCountry +
-        '. Заполнено: ' +
-        Object.values(COUNTRIES_NEIGHTBOURS).length +
-        ' из ' +
-        COUNTRIES.length
-    );
+  const foundNotFilledCountry = Object.values(Country).find((name) => !COUNTRIES_NEIGHTBOURS[name]);
+  if (foundNotFilledCountry) {
+    alert('Заполни соседей: ' + foundNotFilledCountry + '. Заполнено: ' + Object.values(COUNTRIES_NEIGHTBOURS).length + ' из ' + COUNTRIES.length);
   }
 
   const handleGenerateNewQuestion = () => {
@@ -44,12 +33,9 @@ export const Countries: FC = () => {
       alert('Заведи страны соседи:' + selectedCountry);
       return;
     }
-    const isFoundNeighbour = COUNTRIES_NEIGHTBOURS[selectedCountry].some(
-      (country) => country === input
-    );
+    const isFoundNeighbour = COUNTRIES_NEIGHTBOURS[selectedCountry].some((country) => country === input);
 
-    const isNoNeighbour =
-      !input.length && COUNTRIES_NEIGHTBOURS[selectedCountry].length === 0;
+    const isNoNeighbour = !input.length && COUNTRIES_NEIGHTBOURS[selectedCountry].length === 0;
 
     if (isFoundNeighbour || isNoNeighbour) {
       // alert(
@@ -61,6 +47,7 @@ export const Countries: FC = () => {
         title: 'Верно!',
         description: `Страна ${selectedCountry} является соседом ${input}`,
       });
+      setInput('');
     } else {
       setErrorsCount(errorsCount + 1);
       notification['error']({
@@ -83,12 +70,12 @@ export const Countries: FC = () => {
       </div>
       <div>Ошибок: {errorsCount}</div>
 
-      <div>{selectedCountry}</div>
+      <div>
+        {selectedCountry}: {FLAGS[selectedCountry]}
+      </div>
       <AutoComplete
         value={input}
-        options={COUNTRIES.filter((v) =>
-          v.toLowerCase().includes(input.toLowerCase())
-        ).map((value) => ({ value }))}
+        options={COUNTRIES.filter((v) => v.toLowerCase().includes(input.toLowerCase())).map((value) => ({ value }))}
         style={{ width: 200 }}
         onSelect={setInput}
         onSearch={setInput}
@@ -99,10 +86,7 @@ export const Countries: FC = () => {
         Проверь
       </button>
 
-      <button
-        disabled={passedList.length < COUNTRIES.length}
-        onClick={handleGenerateNewQuestion}
-      >
+      <button disabled={passedList.length < COUNTRIES.length} onClick={handleGenerateNewQuestion}>
         Выбрать другую
       </button>
       <button

@@ -6,24 +6,14 @@ import { TAnotherPositionState } from '@containers/Map/Map';
 export interface SocketIOConnectProps {
   type: 'connect' | 'create';
   position: TPosition;
-  setAnotherPosition: React.Dispatch<
-    React.SetStateAction<TAnotherPositionState>
-  >;
+  setAnotherPosition: React.Dispatch<React.SetStateAction<TAnotherPositionState>>;
   channelId?: string;
   onClose: () => void;
   onOpen: (status: SocketIOConnectProps['type'] | null) => void;
   onCreate: (channelId: string) => void;
 }
 
-export const SocketIOConnect: FC<SocketIOConnectProps> = ({
-  type,
-  position,
-  setAnotherPosition,
-  channelId,
-  onClose,
-  onOpen,
-  onCreate,
-}) => {
+export const SocketIOConnect: FC<SocketIOConnectProps> = ({ type, position, setAnotherPosition, channelId, onClose, onOpen, onCreate }) => {
   const [isReady, setIsReady] = useState<boolean>(false);
 
   const { sendMessage, close } = useSocket(

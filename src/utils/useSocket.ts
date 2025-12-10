@@ -2,11 +2,7 @@ import { POLL_URL } from '@node/constants';
 import { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 
-export const useSocket = (
-  url: string,
-  onOpen: (ws: SocketIOClient.Socket) => void,
-  onMessage: (message: string) => void
-) => {
+export const useSocket = (url: string, onOpen: (ws: SocketIOClient.Socket) => void, onMessage: (message: string) => void) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket | null>(null);
 
   useEffect(() => {
