@@ -180,7 +180,7 @@ export const FLAGS: Record<Country, string> = {
   [Country.CENTRAL_AFRICAN_REPUBLIC]: '🇨🇫',
   [Country.CHAD]: '🇹🇩',
   [Country.MONTENEGRO]: '🇲🇪',
-  [Country.CZECH_REPUBLIC]: '🇨🇿',
+  [Country.CZECHIA]: '🇨🇿',
   [Country.CHILE]: '🇨🇱',
   [Country.SWITZERLAND]: '🇨🇭',
   [Country.SWEDEN]: '🇸🇪',
