@@ -421,8 +421,32 @@ export const COUNTRIES_NEIGHTBOURS: Partial<Record<Country, Country[]>> = {
   [Country.MAURITANIA]: [Country.WESTERN_SAHARA, Country.ALGERIA, Country.MALI, Country.SENEGAL],
   [Country.MADAGASCAR]: [],
   [Country.MALAWI]: [Country.TANZANIA, Country.MOZAMBIQUE, Country.ZAMBIA],
+  [Country.MALAYSIA]: [Country.THAILAND, Country.INDONESIA, Country.SINGAPORE, Country.BRUNEI],
+  [Country.MALI]: [Country.ALGERIA, Country.NIGER, Country.BURKINA_FASO, Country.COTE_DIVOIRE, Country.GUINEA, Country.SENEGAL, Country.MAURITANIA],
+  [Country.MALTA]: [],
+  [Country.MOROCCO]: [Country.ALGERIA, Country.WESTERN_SAHARA],
+  [Country.MEXICO]: [Country.UNITED_STATES, Country.GUATEMALA, Country.BELIZE],
+  [Country.MOZAMBIQUE]: [Country.TANZANIA, Country.MALAWI, Country.ZAMBIA, Country.ZIMBABWE, Country.ESWATINI, Country.SOUTH_AFRICA],
+  [Country.ESWATINI]: [Country.MOZAMBIQUE, Country.SOUTH_AFRICA],
+  [Country.MONACO]: [Country.FRANCE],
+  [Country.MONGOLIA]: [Country.RUSSIA, Country.CHINA],
+  [Country.NAMIBIA]: [Country.ANGOLA, Country.ZAMBIA, Country.ZIMBABWE, Country.BOTSWANA, Country.SOUTH_AFRICA],
+  [Country.NAURU]: [],
+  [Country.NEPAL]: [Country.INDIA, Country.CHINA],
+  [Country.NIGERIA]: [Country.BENIN, Country.NIGER, Country.CHAD, Country.CAMEROON],
+  [Country.NIGER]: [Country.NIGERIA, Country.BENIN, Country.BURKINA_FASO, Country.MALI, Country.ALGERIA, Country.LIBYA, Country.CHAD],
+  [Country.NICARAGUA]: [Country.HONDURAS, Country.COSTA_RICA],
+  [Country.PALAU]: [],
+  [Country.PAPUA_NEW_GUINEA]: [Country.INDONESIA],
+  [Country.PARAGUAY]: [Country.BOLIVIA, Country.BRAZIL, Country.ARGENTINA],
+  [Country.POLAND]: [Country.BELARUS, Country.UKRAINE, Country.RUSSIA, Country.LITHUANIA, Country.SLOVAKIA, Country.CZECHIA, Country.GERMANY],
 };
 
+// По континентам тест
+// Сделать проверку что если один город включает другой, то и другой включает первый
+// Игра на вид цветов, грибов и прочее
+// Назави страны на букву ...
+// Игра отметить острова
 // Написать скрипт для проверки, что б все страны взаимно друг друга включали и ничего не упустил
 // Игра в угадать направление!
 // Сделать так, что б свопросом ещё видел и флаг
