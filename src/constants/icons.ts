@@ -202,7 +202,6 @@ export const FLAGS: Record<Country, string> = {
   [Country.FRENCH_GUIANA]: '🇬🇫',
   [Country.GIBRALTAR]: '🇬🇮',
   [Country.GUAM]: '🇬🇺',
-  [Country.MELANESIA]: '🇵🇬', // Используем флаг Папуа-Новой Гвинеи
   [Country.NEW_CALEDONIA]: '🇳🇨',
   [Country.POLYNESIA]: '🇵🇫', // Французская Полинезия
   [Country.TAHITI]: '🇵🇫', // Таити - часть Французской Полинезии
