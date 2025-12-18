@@ -208,7 +208,7 @@ export enum Country {
 // Массив всех стран из enum (для обратной совместимости)
 export const COUNTRIES: Country[] = Object.values(Country);
 
-export const COUNTRIES_NEIGHTBOURS: Partial<Record<Country, Country[]>> = {
+export const COUNTRIES_NEIGHTBOURS: Record<Country, Country[]> = {
   [Country.TUNISIA]: [Country.LIBYA, Country.ALGERIA],
   [Country.IRAN]: [Country.TURKMENISTAN, Country.AFGHANISTAN, Country.PAKISTAN, Country.IRAQ, Country.TURKEY, Country.AZERBAIJAN, Country.ARMENIA],
   [Country.CUBA]: [],
