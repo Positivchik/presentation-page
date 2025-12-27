@@ -3,14 +3,17 @@ import { getRandomNumber } from '@utils/getRandomNumber';
 import { Input, notification } from 'antd';
 import React, { FC, useState } from 'react';
 
+// игра в соседи алфавита
+// добавить алгоритм которы изучает необходимое количесто ввести символы, учитывая ошибки
+// игры разума
 export const RuAlphabetPrice: FC = () => {
-  const [currentCharacter, setCurrentCharacter] = useState<string>(RU_ALPHABET[getRandomNumber(0, RU_ALPHABET.length)]);
+  const [currentCharacter, setCurrentCharacter] = useState<string>(RU_ALPHABET[getRandomNumber(0, RU_ALPHABET.length - 1)]);
   const [passedList, setPassedList] = useState<string[]>([]);
   const [errorsCount, setErrorsCount] = useState<number>(0);
   const [input, setInput] = useState<string>('');
 
   const generateNew = () => {
-    setCurrentCharacter(RU_ALPHABET[getRandomNumber(0, RU_ALPHABET.length)]);
+    setCurrentCharacter(RU_ALPHABET[getRandomNumber(0, RU_ALPHABET.length - 1)]);
   };
 
   const handleCheck = () => {
