@@ -1,11 +1,8 @@
 import { COUNTRIES, COUNTRIES_NEIGHTBOURS, Country } from '@constants/countries';
 import { FLAGS } from '@constants/icons';
+import { getRandomNumber } from '@utils/getRandomNumber';
 import { AutoComplete, notification } from 'antd';
 import React, { FC, useMemo, useState } from 'react';
-
-const getRandomNumber = (min = 0, max = 200) => {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
 
 export const Countries: FC = () => {
   const [passedList, setPassedList] = useState<Country[]>([]);
