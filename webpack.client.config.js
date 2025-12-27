@@ -74,6 +74,7 @@ module.exports = {
   devServer: {
     port: 8080,
     static: './dist/browser',
+    historyApiFallback: true,
     hot: true,
     proxy: [
       {

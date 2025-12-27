@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 
 initSocketIO(server);
 
-app.get('/', (req, res) => {
+app.get('/*', (req, res) => {
   const file = fs.readFileSync('./dist/browser/index.html', 'utf-8');
   res.send(file);
 });
